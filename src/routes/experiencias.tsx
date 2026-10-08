@@ -1,0 +1,10 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
+import { Search } from 'lucide-react';
+import { PeaceLayout, PageHeading, peaceHead } from '@/components/peace-layout';
+import { ExperienceCard } from '@/components/peace-content';
+import { ExperienceDialog } from '@/components/experience-dialog';
+import { Button } from '@/components/ui/button';
+import { categories, experiences } from '@/lib/peace-data';
+export const Route=createFileRoute('/experiencias')({head:()=>peaceHead('Catálogo de experiencias','Metodologías y fichas de sistematización para 20 experiencias de paz de 19 colegios.'),component:Experiencias});
+function Experiencias(){const [category,setCategory]=useState('Todas');const [query,setQuery]=useState('');const [selected,setSelected]=useState<number|null>(null);const shown=experiences.filter(e=>(category==='Todas'||e.category===category)&&`${e.name} ${e.category}`.toLocaleLowerCase('es').includes(query.toLocaleLowerCase('es')));return <PeaceLayout><PageHeading label="La paz se vive en la escuela" title="Experiencias que inspiran" description="20 experiencias, 19 colegios y muchas formas de construir una cultura de paz. Una sistematización que pone en el centro a cada iniciativa."/><section className="section wrap"><div className="search-box"><Search size={17}/><input aria-label="Buscar experiencias" placeholder="Buscar una experiencia o metodología…" value={query} onChange={e=>setQuery(e.target.value)}/></div><div className="chips">{['Todas',...categories].map(c=><Button key={c} size="sm" variant="outline" className={category===c?'selected':''} onClick={()=>setCategory(c)}>{c}</Button>)}</div><p className="notice">Fichas ilustrativas por metodología. Los nombres, colegios y resultados de las 20 experiencias reales están pendientes de incorporar.</p><div className="experience-grid">{shown.map(e=><ExperienceCard key={e.id} experience={e} onOpen={()=>setSelected(e.id)}/>)}</div>{shown.length===0&&<p className="no-results">No se encontraron experiencias. Prueba con otra búsqueda o categoría.</p>}<ExperienceDialog id={selected} onClose={()=>setSelected(null)}/></section></PeaceLayout>}
