@@ -1,29 +1,73 @@
-# Welcome to your Lovable project
+# Gestores de Paz Escolares
 
-This project was built with [Lovable](https://lovable.dev).
+Mockup del portal de Gestores de Paz Escolares, construido con TanStack Start, React, TypeScript y Tailwind CSS.
 
-## Build with Lovable
+## Cómo ejecutar este proyecto
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Necesitas **Node.js 20 o superior** (o Bun) instalado.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+Si aún no tienes el proyecto, clónalo:
 
-## Development
+```bash
+git clone https://github.com/yatoDx/Mockup-pagina-encuentros-de-Paz.git
+cd Mockup-pagina-encuentros-de-Paz
+```
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Instala las dependencias:
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+```bash
+npm install
+```
+
+Inicia el servidor de desarrollo:
+
+```bash
 npm run dev
 ```
 
-## Built with
+Abre la dirección que aparece en la terminal, normalmente `http://localhost:8080`.
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+## Comandos disponibles
+
+Ejecuta las pruebas:
+
+```bash
+npm test
+```
+
+Comprueba el formato y las reglas de ESLint:
+
+```bash
+npm run lint
+```
+
+Genera la versión de producción:
+
+```bash
+npm run build
+```
+
+Para previsualizar la versión de producción:
+
+```bash
+npm run preview
+```
+
+## Estructura y contenido
+
+- `src/routes/` — las páginas: inicio, encuentros, experiencias, libro virtual, galería y red.
+- `src/styles.css` — los colores y estilos del portal.
+- `src/lib/peace-data.ts` — los datos de muestra de experiencias, colegios y capítulos del libro.
+- `src/assets/` — el osito, el afiche y las fotografías de muestra.
+
+Los registros reales de las experiencias, el PDF del libro y las fotografías oficiales
+aún están pendientes; todo lo que ves marcado como "de muestra" o "pendiente" debe reemplazarse.
+
+## Desarrollo con Bun
+
+También puedes usar Bun:
+
+```bash
+bun install
+bun run dev
+```
