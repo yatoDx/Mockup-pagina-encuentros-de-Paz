@@ -7,5 +7,176 @@ import { Stats, EventCards, BookCover, ExperienceCard, photo } from '@/component
 import { ExperienceDialog } from '@/components/experience-dialog';
 import { ExperienceMap } from '@/components/peace-map/experience-map';
 import { experiences } from '@/lib/peace-data';
-export const Route=createFileRoute('/')({head:()=>peaceHead('Inicio','Encuentros, experiencias y memorias de la comunidad de gestores de paz escolares de Bogotá.'),component:Home});
-function Home(){const [selected,setSelected]=useState<number|null>(null);const [category,setCategory]=useState('Todas');const shown=category==='Todas'?experiences.slice(0,3):experiences.filter(e=>e.category===category);return <PeaceLayout><ExperienceMap/><section className="hero"><img className="hero-img" src={photo} alt="Estudiantes en un círculo de diálogo escolar, fotografía ilustrativa" width="1536" height="1024"/><div className="wrap hero-inner"><div className="eyebrow"><span className="live-dot"/> Una comunidad que siembra paz</div><h1>Encuentro de Gestores<br/>de Paz Escolares<span>.</span></h1><p>De las aulas para el mundo. Historias, experiencias y voces que construyen una cultura de paz en nuestras escuelas.</p><div className="hero-actions"><Button size="lg" asChild><Link to="/experiencias">Explorar experiencias <ArrowUpRight/></Link></Button><Button variant="heroOutline" size="lg" asChild><Link to="/libro"><BookOpen/> Nuestro libro virtual</Link></Button></div></div><div className="hero-bottom"><div className="wrap"><span className="hero-label"><MapPin size={13}/> Bogotá, Colombia · Encuentros 2025—2026</span><span className="hero-credit">Escuchar. Dialogar. Transformar.</span></div></div></section><Stats/><section className="section wrap"><div className="section-top"><div><div className="eyebrow">Nos encontramos para transformar</div><h2>Encuentros que dejan huella</h2></div><Button variant="link" asChild><Link to="/encuentros">Todos los encuentros <ArrowRight/></Link></Button></div><EventCards/></section><section className="book-band"><div className="wrap"><div className="book-feature"><div className="eyebrow"><BookOpen size={15}/> Un libro, muchas voces</div><h2>Las historias de paz<br/>merecen ser contadas.</h2><p>Un libro vivo que reúne los aprendizajes, las metodologías y las experiencias de quienes construyen paz desde la escuela.</p><Button asChild><Link to="/libro">Abrir el libro virtual <ArrowUpRight/></Link></Button><div className="book-mini"><span><BookOpen size={12} className="inline mr-1"/> Edición de muestra</span><span>2025—2026</span><span><Download size={12} className="inline mr-1"/> PDF por incorporar</span></div></div><BookCover/></div></section><section className="section wrap"><div className="section-top"><div><div className="eyebrow"><Heart size={13}/> La paz se vive en la escuela</div><h2>Experiencias que inspiran</h2></div><Button variant="link" asChild><Link to="/experiencias">Ver el catálogo <ArrowRight/></Link></Button></div><div className="chips">{['Todas','Círculos de la palabra','Jueces de paz','Teatro y sociodrama'].map(c=><Button key={c} size="sm" variant="outline" className={category===c?'selected':''} onClick={()=>setCategory(c)}>{c}</Button>)}</div><div className="experience-grid">{shown.map(e=><ExperienceCard key={e.id} experience={e} onOpen={()=>setSelected(e.id)}/>)}</div><ExperienceDialog id={selected} onClose={()=>setSelected(null)}/></section></PeaceLayout>}
+import { InstitutionalLogosBanner } from '@/components/institutional-logos';
+import { QuienesSomosSection } from '@/components/quienes-somos';
+
+export const Route = createFileRoute('/')({
+  head: () =>
+    peaceHead(
+      'Inicio',
+      'Encuentros, experiencias y memorias de la comunidad de gestores de paz escolares de Bogotá. Una iniciativa de la Universidad Distrital, IPAZUD y E-PAZ.'
+    ),
+  component: Home,
+});
+
+function Home() {
+  const [selected, setSelected] = useState<number | null>(null);
+  const [category, setCategory] = useState('Todas');
+  const shown =
+    category === 'Todas'
+      ? experiences.slice(0, 3)
+      : experiences.filter((e) => e.category === category);
+
+  return (
+    <PeaceLayout>
+      {/* 1. Mapa interactivo de Colombia */}
+      <ExperienceMap />
+
+      {/* 2. Hero principal con imagen y lema */}
+      <section className="hero">
+        <img
+          className="hero-img"
+          src={photo}
+          alt="Estudiantes en un círculo de diálogo escolar, fotografía ilustrativa"
+          width="1536"
+          height="1024"
+        />
+        <div className="wrap hero-inner">
+          <div className="eyebrow">
+            <span className="live-dot" /> Una comunidad que siembra paz
+          </div>
+          <h1>
+            Encuentro de Gestores
+            <br />
+            de Paz Escolares<span>.</span>
+          </h1>
+          <p>
+            De las aulas para el mundo. Historias, experiencias y voces que construyen una
+            cultura de paz en nuestras escuelas.
+          </p>
+          <div className="hero-actions">
+            <Button size="lg" asChild>
+              <Link to="/experiencias">
+                Explorar experiencias <ArrowUpRight />
+              </Link>
+            </Button>
+            <Button variant="heroOutline" size="lg" asChild>
+              <Link to="/libro">
+                <BookOpen /> Nuestro libro virtual
+              </Link>
+            </Button>
+            <Button variant="secondary" size="lg" asChild>
+              <a href="#quienes-somos">
+                ¿Quiénes Somos? ↓
+              </a>
+            </Button>
+          </div>
+        </div>
+        <div className="hero-bottom">
+          <div className="wrap">
+            <span className="hero-label">
+              <MapPin size={13} /> Bogotá, Colombia · Encuentros 2025—2026
+            </span>
+            <span className="hero-credit">Escuchar. Dialogar. Transformar.</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Banner de Respaldo Institucional Oficial: U. Distrital, IPAZUD y E-PAZ */}
+      <InstitutionalLogosBanner />
+
+      {/* 4. Estadísticas del proyecto */}
+      <Stats />
+
+      {/* 5. Módulo ¿Quiénes Somos? e Identidad de Marca */}
+      <QuienesSomosSection />
+
+      {/* 6. Encuentros que dejan huella */}
+      <section className="section wrap">
+        <div className="section-top">
+          <div>
+            <div className="eyebrow">Nos encontramos para transformar</div>
+            <h2>Encuentros que dejan huella</h2>
+          </div>
+          <Button variant="link" asChild>
+            <Link to="/encuentros">
+              Todos los encuentros <ArrowRight />
+            </Link>
+          </Button>
+        </div>
+        <EventCards />
+      </section>
+
+      {/* 7. Libro virtual */}
+      <section className="book-band">
+        <div className="wrap">
+          <div className="book-feature">
+            <div className="eyebrow">
+              <BookOpen size={15} /> Un libro, muchas voces
+            </div>
+            <h2>
+              Las historias de paz
+              <br />
+              merecen ser contadas.
+            </h2>
+            <p>
+              Un libro vivo que reúne los aprendizajes, las metodologías y las experiencias de
+              quienes construyen paz desde la escuela.
+            </p>
+            <Button asChild>
+              <Link to="/libro">
+                Abrir el libro virtual <ArrowUpRight />
+              </Link>
+            </Button>
+            <div className="book-mini">
+              <span>
+                <BookOpen size={12} className="inline mr-1" /> Edición de muestra
+              </span>
+              <span>2025—2026</span>
+              <span>
+                <Download size={12} className="inline mr-1" /> PDF por incorporar
+              </span>
+            </div>
+          </div>
+          <BookCover />
+        </div>
+      </section>
+
+      {/* 9. Catálogo de experiencias destacadas */}
+      <section className="section wrap">
+        <div className="section-top">
+          <div>
+            <div className="eyebrow">
+              <Heart size={13} /> La paz se vive en la escuela
+            </div>
+            <h2>Experiencias que inspiran</h2>
+          </div>
+          <Button variant="link" asChild>
+            <Link to="/experiencias">
+              Ver el catálogo <ArrowRight />
+            </Link>
+          </Button>
+        </div>
+        <div className="chips">
+          {['Todas', 'Círculos de la palabra', 'Jueces de paz', 'Teatro y sociodrama'].map((c) => (
+            <Button
+              key={c}
+              size="sm"
+              variant="outline"
+              className={category === c ? 'selected' : ''}
+              onClick={() => setCategory(c)}
+            >
+              {c}
+            </Button>
+          ))}
+        </div>
+        <div className="experience-grid">
+          {shown.map((e) => (
+            <ExperienceCard key={e.id} experience={e} onOpen={() => setSelected(e.id)} />
+          ))}
+        </div>
+        <ExperienceDialog id={selected} onClose={() => setSelected(null)} />
+      </section>
+    </PeaceLayout>
+  );
+}

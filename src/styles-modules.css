@@ -1,0 +1,605 @@
+/* =========================================================
+   ESTILOS: ¿QUIÉNES SOMOS?, CANALES / REDES & LOGOS INSTITUCIONALES
+   ========================================================= */
+
+/* --- BANNER DE RESPALDO INSTITUCIONAL --- */
+.institutional-banner {
+  background: color-mix(in oklch, var(--secondary) 80%, white);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+}
+.institutional-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.institutional-lead {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.institutional-tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--primary);
+}
+.institutional-motto {
+  font-size: 12.5px;
+  color: var(--muted-foreground);
+  margin: 0;
+  max-width: 380px;
+  line-height: 1.4;
+}
+.institutional-grid {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.institutional-card {
+  display: flex;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.institutional-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* --- MÓDULO ¿QUIÉNES SOMOS? --- */
+.section-quienes-somos {
+  padding-block: 65px;
+  background: var(--background);
+  border-top: 1px solid var(--border);
+}
+.qs-header {
+  margin-bottom: 30px;
+}
+.qs-title-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.qs-title-row h2 {
+  font-size: 34px;
+  font-weight: 800;
+  margin: 6px 0 0;
+  color: var(--foreground);
+}
+.qs-badge-alianza {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.qs-badge-alianza strong {
+  display: block;
+  font-size: 12.5px;
+  color: var(--primary);
+}
+.qs-badge-alianza span {
+  display: block;
+  font-size: 10.5px;
+  color: var(--muted-foreground);
+}
+
+/* Pestañas internas */
+.qs-nav-tabs {
+  display: flex;
+  gap: 10px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 2px;
+  margin-bottom: 35px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.qs-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  border-radius: 6px 6px 0 0;
+}
+.qs-tab-btn:hover {
+  color: var(--primary);
+  background: var(--secondary);
+}
+.qs-tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  background: color-mix(in oklch, var(--accent) 30%, transparent);
+}
+
+/* Entidades de la alianza */
+.qs-alianza-intro {
+  max-width: 800px;
+  margin-bottom: 30px;
+}
+.qs-tagline {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--primary);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.qs-alianza-intro h3 {
+  font-size: 24px;
+  margin: 0 0 10px;
+  line-height: 1.3;
+}
+.qs-alianza-intro p {
+  color: var(--muted-foreground);
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.qs-entities-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.qs-entity-card {
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.qs-entity-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.06);
+}
+.qs-entity-logo-wrap {
+  margin-bottom: 16px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+.qs-entity-card h4 {
+  font-size: 16.5px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+.qs-entity-role {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+.qs-entity-text {
+  font-size: 12.5px;
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  margin-bottom: 18px;
+  flex: 1;
+}
+.qs-entity-points {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--foreground);
+}
+.qs-entity-points li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.qs-entity-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+/* Trayectoria */
+.qs-timeline-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 25px;
+}
+.qs-timeline-card {
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 30px;
+  display: flex;
+  gap: 24px;
+}
+.qs-timeline-card-highlight {
+  background: color-mix(in oklch, var(--accent) 35%, var(--background));
+  border-color: var(--primary);
+}
+.qs-timeline-year {
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--muted-foreground);
+  line-height: 1;
+}
+.qs-timeline-year.current {
+  color: var(--primary);
+}
+.qs-timeline-body h3 {
+  font-size: 19px;
+  margin: 10px 0 8px;
+}
+.qs-timeline-body p {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  line-height: 1.7;
+}
+.qs-timeline-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 18px 0;
+  padding: 12px 14px;
+  background: var(--background);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 11px;
+}
+.qs-timeline-stats strong {
+  display: block;
+  font-size: 16px;
+  color: var(--primary);
+}
+
+/* Red de Colegios */
+.qs-red-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 35px;
+  align-items: center;
+}
+.qs-red-info h3 {
+  font-size: 26px;
+  margin: 10px 0 12px;
+}
+.qs-red-info p {
+  color: var(--muted-foreground);
+  font-size: 14px;
+  line-height: 1.75;
+}
+.qs-actors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 22px 0;
+}
+.qs-actor-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.qs-actor-icon {
+  color: var(--primary);
+  margin-top: 2px;
+  shrink: 0;
+}
+.qs-actor-item strong {
+  display: block;
+  font-size: 13.5px;
+  margin-bottom: 2px;
+}
+.qs-actor-item p {
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.5;
+}
+.qs-red-quote {
+  margin-top: 15px;
+  padding: 16px 20px;
+  background: var(--secondary);
+  border-left: 3px solid var(--primary);
+  border-radius: 0 8px 8px 0;
+}
+.qs-red-quote p {
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0 0 6px;
+  color: var(--foreground);
+}
+.qs-red-quote span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* Pilares */
+.qs-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.qs-pillar-card {
+  padding: 24px;
+  border-radius: 10px;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  position: relative;
+  transition: transform 0.2s ease;
+}
+.qs-pillar-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+}
+.qs-pillar-num {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary);
+  opacity: 0.35;
+  margin-bottom: 6px;
+}
+.qs-pillar-card h4 {
+  font-size: 17px;
+  margin: 0 0 8px;
+}
+.qs-pillar-card p {
+  font-size: 12.5px;
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* =========================================================
+   ESTILOS: CANALES, YOUTUBE Y ECOSISTEMA DIGITAL
+   ========================================================= */
+.section-canales-redes {
+  padding-block: 65px;
+  background: var(--secondary);
+  border-top: 1px solid var(--border);
+}
+
+/* Reproductor YouTube + Playlist */
+.youtube-player-container {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 24px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+.youtube-screen-box {
+  display: flex;
+  flex-direction: column;
+}
+.youtube-responsive-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+  background: #000;
+}
+.youtube-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.youtube-video-meta {
+  padding: 24px;
+  flex: 1;
+}
+.badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #DC2626;
+  background: #FEE2E2;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.live-dot-red {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #DC2626;
+  display: inline-block;
+  animation: pulse-red 1.5s infinite;
+}
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Playlist lateral */
+.youtube-playlist-side {
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  background: color-mix(in oklch, var(--secondary) 60%, var(--background));
+}
+.playlist-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.playlist-items-list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 380px;
+}
+.playlist-item-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.playlist-item-card:hover {
+  background: var(--secondary);
+}
+.playlist-item-card.active {
+  background: var(--background);
+  border-left: 3px solid var(--primary);
+}
+.playlist-thumb-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  shrink: 0;
+}
+.playlist-footer-note {
+  margin-top: auto;
+  padding: 15px 20px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  border-top: 1px solid var(--border);
+  background: var(--background);
+}
+
+/* Tarjetas Redes Sociales */
+.social-ecosystem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+.social-card {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+.social-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.06);
+}
+.social-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.social-icon-badge {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+}
+.social-card h4 {
+  font-size: 18px;
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+.social-card p {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+  margin: 0 0 20px;
+  flex: 1;
+}
+.social-card-action {
+  margin-top: auto;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1050px) {
+  .qs-entities-grid,
+  .qs-pillars-grid,
+  .social-ecosystem-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .youtube-player-container {
+    grid-template-columns: 1fr;
+  }
+  .youtube-playlist-side {
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+  .qs-timeline-wrap {
+    grid-template-columns: 1fr;
+  }
+  .qs-red-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .institutional-banner-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .institutional-grid {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .institutional-card {
+    justify-content: center;
+  }
+  .qs-entities-grid,
+  .qs-pillars-grid,
+  .social-ecosystem-grid {
+    grid-template-columns: 1fr;
+  }
+  .qs-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .qs-nav-tabs {
+    padding-bottom: 6px;
+  }
+  .qs-timeline-card {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

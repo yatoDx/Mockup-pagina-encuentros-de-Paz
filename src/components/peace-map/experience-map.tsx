@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowUpRight, MapPin, X } from "lucide-react";
+import { ArrowUpRight, MapPin, X, Building2, Users, Mail, Phone, Sparkles } from "lucide-react";
 import bear from "@/assets/peace-bear.png";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -20,7 +20,7 @@ export function ExperienceMap() {
       <div className="pmap-inner">
         <div className="pmap-side">
           <div className="pmap-step">
-            <span className="num">01</span> Colombia · Vista esquemática
+            <span className="num">01</span> Colombia · Colegios participantes
           </div>
           <div className="pmap-encuentro">II Encuentro 2026</div>
           <h2>
@@ -28,18 +28,18 @@ export function ExperienceMap() {
             <br />
             que construyen <em>paz</em>.
           </h2>
-          <p className="pmap-lead">Haz clic en un punto para descubrir una experiencia.</p>
+          <p className="pmap-lead">Haz clic en un punto para descubrir cada colegio y experiencia.</p>
           <div className="pmap-stats">
             <span>
-              <strong>{mapExperiences.length}</strong> experiencias demo
+              <strong>{mapExperiences.length}</strong> experiencias
             </span>
             <span>
-              <strong>{regions}</strong> regiones naturales
+              <strong>{regions}</strong> regiones
             </span>
           </div>
           <div className="pmap-bear">
             <img src={bear} alt="" width="46" height="50" />
-            <p>Arrastra, acércate y descubre una historia.</p>
+            <p>Navega por el mapa y conoce a sus protagonistas.</p>
           </div>
           <p className="pmap-notice">{DEMO_MAP_NOTICE}</p>
         </div>
@@ -67,8 +67,11 @@ export function ExperienceMap() {
                 <i /> {selected.category}
               </span>
               <h3>{selected.name}</h3>
+              <p className="text-xs font-semibold text-primary/90 mt-0.5">
+                {selected.school} ({selected.legalNature})
+              </p>
               <p className="meta">
-                <MapPin size={12} /> {selected.city}, {selected.department} · {regionOf(selected)}
+                <MapPin size={12} /> {selected.city}, {selected.department} · Región {regionOf(selected)}
               </p>
               <p>{selected.summary}</p>
               <Button size="sm" onClick={() => setOpenId(selected.id)}>
@@ -85,40 +88,49 @@ export function ExperienceMap() {
           if (!value) setOpenId(null);
         }}
       >
-        <DialogContent className="dialog-content">
-          <DialogTitle>{open?.name}</DialogTitle>
-          <DialogDescription>
-            Ficha de demostración · Los datos de este mapa son ficticios y están pendientes de
-            sustituir por la información real.
+        <DialogContent className="dialog-content max-w-xl max-h-[85vh] overflow-y-auto">
+          <DialogTitle className="text-lg font-bold leading-snug">{open?.name}</DialogTitle>
+          <DialogDescription className="text-sm font-medium text-foreground">
+            {open?.school} · {open?.city}, {open?.department} ({open?.legalNature})
           </DialogDescription>
-          {open &&
-            [
-              {
-                title: "01 · Institución o colegio",
-                value: "Registro ficticio de demostración. No corresponde a una institución real.",
-              },
-              { title: "02 · Categoría y metodología", value: open.category },
-              {
-                title: "03 · Ubicación de referencia",
-                value: `${open.city}, ${open.department} (punto de prueba, no verificado)`,
-              },
-              { title: "04 · Resumen de la experiencia", value: open.summary },
-              { title: "05 · Descripción ampliada", value: open.detail },
-              {
-                title: "06 · Actores y alcance",
-                value: "Sin información real: este punto solo existe para probar la interacción.",
-              },
-              {
-                title: "07 · Impacto e indicadores",
-                value:
-                  "Sin indicadores verificados. Los datos reales están pendientes de incorporar.",
-              },
-            ].map((field) => (
-              <div className="field" key={field.title}>
-                <h4>{field.title}</h4>
-                <p>{field.value}</p>
+          {open && (
+            <div className="space-y-3 pt-2 text-sm">
+              <div className="field">
+                <h4 className="text-xs uppercase text-muted-foreground font-semibold">
+                  Metodología y Enfoque
+                </h4>
+                <p className="font-medium text-foreground">{open.category}</p>
               </div>
-            ))}
+
+              <div className="field">
+                <h4 className="text-xs uppercase text-muted-foreground font-semibold">
+                  Resumen de la Experiencia
+                </h4>
+                <p className="text-foreground leading-relaxed">{open.summary}</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t text-xs">
+                <div className="bg-muted/40 p-2.5 rounded border">
+                  <span className="font-semibold block text-muted-foreground mb-0.5">Rectoría</span>
+                  <span className="font-medium text-foreground">{open.rector}</span>
+                </div>
+                <div className="bg-muted/40 p-2.5 rounded border">
+                  <span className="font-semibold block text-muted-foreground mb-0.5">Docente Tutor / Acompañante</span>
+                  <span className="font-medium text-foreground">{open.tutor}</span>
+                </div>
+              </div>
+
+              <div className="bg-muted/40 p-2.5 rounded border text-xs">
+                <span className="font-semibold block text-muted-foreground mb-0.5">Voceros Estudiantiles</span>
+                <span className="text-foreground">{open.spokespersons}</span>
+              </div>
+
+              <div className="pt-2 border-t flex items-center justify-between text-xs text-muted-foreground">
+                <span>Contacto institucional: <strong className="text-foreground">{open.institutionalEmail}</strong></span>
+                <span className="font-semibold text-primary">Región {regionOf(open)}</span>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </section>

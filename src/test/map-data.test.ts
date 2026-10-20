@@ -5,9 +5,8 @@ import { categories } from "@/lib/peace-data";
 const COLOMBIA_BOUNDS = { minLat: -4.3, maxLat: 13.5, minLng: -82, maxLng: -66 };
 
 describe("Puntos de demostración del mapa", () => {
-  it("incluye entre 12 y 18 puntos de prueba", () => {
-    expect(mapExperiences.length).toBeGreaterThanOrEqual(12);
-    expect(mapExperiences.length).toBeLessThanOrEqual(18);
+  it("incluye las 21 experiencias georreferenciadas", () => {
+    expect(mapExperiences.length).toBe(21);
   });
 
   it("marca todos los registros como demostración", () => {

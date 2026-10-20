@@ -14,6 +14,7 @@ import { Route as EncuentrosRouteImport } from './routes/encuentros'
 import { Route as ExperienciasRouteImport } from './routes/experiencias'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as LibroRouteImport } from './routes/libro'
+import { Route as QuienesSomosRouteImport } from './routes/quienes-somos'
 import { Route as RedRouteImport } from './routes/red'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +42,11 @@ const LibroRoute = LibroRouteImport.update({
   path: '/libro',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuienesSomosRoute = QuienesSomosRouteImport.update({
+  id: '/quienes-somos',
+  path: '/quienes-somos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RedRoute = RedRouteImport.update({
   id: '/red',
   path: '/red',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/experiencias': typeof ExperienciasRoute
   '/galeria': typeof GaleriaRoute
   '/libro': typeof LibroRoute
+  '/quienes-somos': typeof QuienesSomosRoute
   '/red': typeof RedRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/experiencias': typeof ExperienciasRoute
   '/galeria': typeof GaleriaRoute
   '/libro': typeof LibroRoute
+  '/quienes-somos': typeof QuienesSomosRoute
   '/red': typeof RedRoute
 }
 export interface FileRoutesById {
@@ -70,14 +78,28 @@ export interface FileRoutesById {
   '/experiencias': typeof ExperienciasRoute
   '/galeria': typeof GaleriaRoute
   '/libro': typeof LibroRoute
+  '/quienes-somos': typeof QuienesSomosRoute
   '/red': typeof RedRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/encuentros' | '/experiencias' | '/galeria' | '/libro' | '/red'
+    | '/'
+    | '/encuentros'
+    | '/experiencias'
+    | '/galeria'
+    | '/libro'
+    | '/quienes-somos'
+    | '/red'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/encuentros' | '/experiencias' | '/galeria' | '/libro' | '/red'
+  to:
+    | '/'
+    | '/encuentros'
+    | '/experiencias'
+    | '/galeria'
+    | '/libro'
+    | '/quienes-somos'
+    | '/red'
   id:
     | '__root__'
     | '/'
@@ -85,6 +107,7 @@ export interface FileRouteTypes {
     | '/experiencias'
     | '/galeria'
     | '/libro'
+    | '/quienes-somos'
     | '/red'
   fileRoutesById: FileRoutesById
 }
@@ -94,6 +117,7 @@ export interface RootRouteChildren {
   ExperienciasRoute: typeof ExperienciasRoute
   GaleriaRoute: typeof GaleriaRoute
   LibroRoute: typeof LibroRoute
+  QuienesSomosRoute: typeof QuienesSomosRoute
   RedRoute: typeof RedRoute
 }
 
@@ -134,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibroRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quienes-somos': {
+      id: '/quienes-somos'
+      path: '/quienes-somos'
+      fullPath: '/quienes-somos'
+      preLoaderRoute: typeof QuienesSomosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/red': {
       id: '/red'
       path: '/red'
@@ -150,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExperienciasRoute: ExperienciasRoute,
   GaleriaRoute: GaleriaRoute,
   LibroRoute: LibroRoute,
+  QuienesSomosRoute: QuienesSomosRoute,
   RedRoute: RedRoute,
 }
 export const routeTree = rootRouteImport
