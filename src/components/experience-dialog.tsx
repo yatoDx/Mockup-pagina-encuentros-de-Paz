@@ -1,12 +1,18 @@
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { experiences } from '@/lib/peace-data';
-import { Building2, MapPin, Mail, Phone, Users, Sparkles } from 'lucide-react';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Link } from "@tanstack/react-router";
+import { experiences } from "@/lib/peace-data";
+import { Building2, MapPin, Mail, Phone, Users, Sparkles, ArrowUpRight } from "lucide-react";
 
 export function ExperienceDialog({ id, onClose }: { id: number | null; onClose: () => void }) {
   const experience = experiences.find((item) => item.id === id);
 
   return (
-    <Dialog open={Boolean(experience)} onOpenChange={(open) => { if (!open) onClose(); }}>
+    <Dialog
+      open={Boolean(experience)}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogContent className="dialog-content max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogTitle className="text-xl font-bold leading-snug">{experience?.name}</DialogTitle>
         <DialogDescription className="flex items-center gap-2 text-sm text-muted-foreground pt-1 pb-2">
@@ -29,7 +35,9 @@ export function ExperienceDialog({ id, onClose }: { id: number | null; onClose: 
               <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
                 <MapPin size={14} /> Ubicación
               </h4>
-              <p className="text-foreground">{experience.city}, {experience.department}</p>
+              <p className="text-foreground">
+                {experience.city}, {experience.department}
+              </p>
             </div>
 
             <div className="field">
@@ -41,17 +49,23 @@ export function ExperienceDialog({ id, onClose }: { id: number | null; onClose: 
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t">
               <div className="field bg-muted/30 p-2.5 rounded-lg border">
-                <h4 className="text-xs font-semibold text-muted-foreground mb-1">Rectoría / Dirección</h4>
+                <h4 className="text-xs font-semibold text-muted-foreground mb-1">
+                  Rectoría / Dirección
+                </h4>
                 {experience.rectors.map((r, i) => (
                   <p key={i} className="text-sm font-medium">
                     {r.name}
-                    {r.phone && <span className="block text-xs text-muted-foreground">Tel: {r.phone}</span>}
+                    {r.phone && (
+                      <span className="block text-xs text-muted-foreground">Tel: {r.phone}</span>
+                    )}
                   </p>
                 ))}
               </div>
 
               <div className="field bg-muted/30 p-2.5 rounded-lg border">
-                <h4 className="text-xs font-semibold text-muted-foreground mb-1">Docente Tutor / Acompañante</h4>
+                <h4 className="text-xs font-semibold text-muted-foreground mb-1">
+                  Docente Tutor / Acompañante
+                </h4>
                 {experience.tutors.map((t, i) => (
                   <div key={i} className="text-sm">
                     <p className="font-medium">{t.name}</p>
@@ -75,7 +89,9 @@ export function ExperienceDialog({ id, onClose }: { id: number | null; onClose: 
                   {experience.primarySpokespersons.map((s, i) => (
                     <li key={i}>
                       <span className="font-medium">{s.name}</span>
-                      {s.phone && <span className="text-xs text-muted-foreground ml-1">({s.phone})</span>}
+                      {s.phone && (
+                        <span className="text-xs text-muted-foreground ml-1">({s.phone})</span>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -90,7 +106,9 @@ export function ExperienceDialog({ id, onClose }: { id: number | null; onClose: 
                     experience.alternateSpokespersons.map((s, i) => (
                       <li key={i}>
                         <span className="font-medium">{s.name}</span>
-                        {s.phone && <span className="text-xs text-muted-foreground ml-1">({s.phone})</span>}
+                        {s.phone && (
+                          <span className="text-xs text-muted-foreground ml-1">({s.phone})</span>
+                        )}
                       </li>
                     ))
                   ) : (
@@ -100,14 +118,25 @@ export function ExperienceDialog({ id, onClose }: { id: number | null; onClose: 
               </div>
             </div>
 
-            <div className="field pt-2 border-t flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+            <div className="field pt-3 border-t flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <Mail size={13} /> Contacto institucional:
                 <strong className="text-foreground">{experience.institutionalEmail}</strong>
               </span>
-              <span className="bg-primary/10 text-primary px-2 py-0.5 rounded font-mono font-semibold">
-                Ficha #{experience.id}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="bg-primary/10 text-primary px-2 py-0.5 rounded font-mono font-semibold">
+                  Ficha #{experience.id}
+                </span>
+                <Link
+                  to="/experiencias"
+                  search={{ id: experience.id }}
+                  className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                  onClick={onClose}
+                >
+                  <span>Ir al catálogo</span>
+                  <ArrowUpRight size={13} />
+                </Link>
+              </div>
             </div>
           </div>
         )}

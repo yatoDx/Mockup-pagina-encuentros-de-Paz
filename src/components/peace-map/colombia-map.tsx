@@ -1,27 +1,50 @@
 import { geoCentroid, geoMercator, geoPath } from "d3-geo";
 import type { FeatureCollection } from "geojson";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { Maximize2, Minus, Plus } from "lucide-react";
+import { Maximize2, Minus, Plus, SearchX } from "lucide-react";
 import { colombia } from "@/lib/colombia-geo";
 import { colombiaDepartments } from "@/lib/colombia-departments-geo";
-import { mapCategoryColor, mapExperiences, mapRegions, regionOf } from "@/lib/map-data";
+import {
+  mapCategoryColor,
+  mapExperiences,
+  mapRegions,
+  regionOf,
+  type MapExperience,
+} from "@/lib/map-data";
 
 const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-const PAD = 46;
+const PAD = 52;
 const MIN_K = 1;
 const MAX_K = 7;
-const FOCUS_K = 2.5;
-const LABEL_MIN_K = 1.3;
-const REGION_FADE_K = 1.7;
-const REGION_MAX_K = 2.8;
-const DEPT_LINE_MIN_K = 1.45;
-const DEPT_LINE_MAX_K = 1.95;
-const DEPT_LABEL_MIN_K = 2.05;
-const DEPT_LABEL_MAX_K = 2.6;
+const FOCUS_K = 2.6;
+const LABEL_MIN_K = 1.35;
+const REGION_FADE_K = 1.8;
+const REGION_MAX_K = 2.9;
+const DEPT_LINE_MIN_K = 1.4;
+const DEPT_LINE_MAX_K = 2.0;
+const DEPT_LABEL_MIN_K = 2.2;
+const DEPT_LABEL_MAX_K = 2.8;
 
 const fade = (k: number, min: number, max: number) =>
   Math.max(0, Math.min(1, (k - min) / (max - min)));
+
+interface NeighborLabel {
+  name: string;
+  lng: number;
+  lat: number;
+  type?: "country" | "water";
+}
+
+const NEIGHBOR_LABELS: NeighborLabel[] = [
+  { name: "PANAMÁ", lng: -78.8, lat: 8.6, type: "country" },
+  { name: "VENEZUELA", lng: -70.2, lat: 7.9, type: "country" },
+  { name: "BRASIL", lng: -68.4, lat: -0.7, type: "country" },
+  { name: "PERÚ", lng: -74.8, lat: -3.5, type: "country" },
+  { name: "ECUADOR", lng: -78.7, lat: 0.1, type: "country" },
+  { name: "Océano Pacífico", lng: -80.6, lat: 4.2, type: "water" },
+  { name: "Mar Caribe", lng: -74.6, lat: 12.2, type: "water" },
+];
 
 interface View {
   k: number;
@@ -32,16 +55,27 @@ interface View {
 interface Props {
   selectedId: string | null;
   onSelect: (id: string) => void;
+  filteredExperiences: MapExperience[];
+  activeCategory?: string;
+  onSelectCategory?: (category: string) => void;
 }
 
-export function ColombiaMap({ selectedId, onSelect }: Props) {
+export function ColombiaMap({ selectedId, onSelect, filteredExperiences }: Props) {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const dragRef = useRef<{ px: number; py: number; x: number; y: number } | null>(null);
   const lastSelectionRef = useRef<string | null>(mapExperiences[0]?.id ?? null);
-  const [size, setSize] = useState({ w: 960, h: 640 });
+  const wheelNoticeTimeoutRef = useRef<number | null>(null);
+
+  const [size, setSize] = useState({ w: 1200, h: 780 });
   const [view, setView] = useState<View>({ k: 1, x: 0, y: 0 });
   const [hovered, setHovered] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [showWheelNotice, setShowWheelNotice] = useState(false);
+
+  const filteredIdSet = useMemo(
+    () => new Set(filteredExperiences.map((e) => e.id)),
+    [filteredExperiences],
+  );
 
   useIsomorphicLayoutEffect(() => {
     const el = stageRef.current;
@@ -96,14 +130,31 @@ export function ColombiaMap({ selectedId, onSelect }: Props) {
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
+
     const onWheel = (event: WheelEvent) => {
-      if (!event.ctrlKey && !event.metaKey) return;
+      if (!event.ctrlKey && !event.metaKey) {
+        setShowWheelNotice(true);
+        if (wheelNoticeTimeoutRef.current) {
+          window.clearTimeout(wheelNoticeTimeoutRef.current);
+        }
+        wheelNoticeTimeoutRef.current = window.setTimeout(() => {
+          setShowWheelNotice(false);
+        }, 2200);
+        return;
+      }
+
       event.preventDefault();
       const rect = el.getBoundingClientRect();
       zoomAt(event.deltaY < 0 ? 1.3 : 0.77, event.clientX - rect.left, event.clientY - rect.top);
     };
+
     el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      if (wheelNoticeTimeoutRef.current) {
+        window.clearTimeout(wheelNoticeTimeoutRef.current);
+      }
+    };
   }, [zoomAt]);
 
   const base = useMemo(() => {
@@ -152,6 +203,10 @@ export function ColombiaMap({ selectedId, onSelect }: Props) {
           return { name: feature.properties.name, bx: projected[0], by: projected[1] };
         })
         .filter((item): item is { name: string; bx: number; by: number } => item !== null),
+      neighbors: NEIGHBOR_LABELS.map((item) => {
+        const projected = projection([item.lng, item.lat]) ?? [0, 0];
+        return { name: item.name, bx: projected[0], by: projected[1], type: item.type };
+      }),
     };
   }, [size.w, size.h]);
 
@@ -169,19 +224,23 @@ export function ColombiaMap({ selectedId, onSelect }: Props) {
   });
 
   const reset = () => {
-    const point = selectedId ? base.points.find((item) => item.id === selectedId) : undefined;
-    if (point) {
-      setView(focusOn(point.bx, point.by, FOCUS_K));
-      return;
-    }
     setView({ k: 1, x: 0, y: 0 });
   };
 
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === "mouse" && event.button !== 0) return;
+    if (event.detail > 1) {
+      event.preventDefault();
+    }
     dragRef.current = { px: event.clientX, py: event.clientY, x: view.x, y: view.y };
     setDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const onDoubleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const rect = event.currentTarget.getBoundingClientRect();
+    zoomAt(1.5, event.clientX - rect.left, event.clientY - rect.top);
   };
 
   const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -207,12 +266,16 @@ export function ColombiaMap({ selectedId, onSelect }: Props) {
   const selectedExperience = mapExperiences.find((experience) => experience.id === selectedId);
   const selectedRegion = selectedExperience ? regionOf(selectedExperience) : null;
   const showLabels = view.k >= LABEL_MIN_K;
+
   const regionOpacity =
     view.k <= REGION_FADE_K
       ? 1
       : Math.max(0, 1 - (view.k - REGION_FADE_K) / (REGION_MAX_K - REGION_FADE_K));
   const deptLineOpacity = fade(view.k, DEPT_LINE_MIN_K, DEPT_LINE_MAX_K);
   const deptLabelOpacity = fade(view.k, DEPT_LABEL_MIN_K, DEPT_LABEL_MAX_K);
+
+  // Agrupamiento inteligente de etiquetas para evitar colisiones de texto (ej. Bogotá)
+  const renderedCities = new Set<string>();
 
   return (
     <div
@@ -223,6 +286,7 @@ export function ColombiaMap({ selectedId, onSelect }: Props) {
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
       onPointerLeave={() => setHovered(null)}
+      onDoubleClick={onDoubleClick}
     >
       <svg
         className="pmap-svg"
@@ -230,13 +294,38 @@ export function ColombiaMap({ selectedId, onSelect }: Props) {
         preserveAspectRatio="none"
         aria-hidden="true"
       >
+        <defs>
+          <clipPath id="pmap-country-clip">
+            <path d={base.land} />
+          </clipPath>
+
+          {/* Sombra suave de relieve natural sobre Colombia */}
+          <filter id="pmap-land-shadow" x="-5%" y="-5%" width="112%" height="114%">
+            <feDropShadow
+              dx="0"
+              dy="6"
+              stdDeviation="10"
+              floodColor="#0f4528"
+              floodOpacity="0.14"
+            />
+          </filter>
+
+          {/* Gradiente natural esmeralda suave para el territorio colombiano */}
+          <linearGradient id="pmap-land-gradient" x1="15%" y1="0%" x2="85%" y2="100%">
+            <stop offset="0%" stopColor="#eaf6ee" />
+            <stop offset="45%" stopColor="#d8f0df" />
+            <stop offset="100%" stopColor="#c7e6d0" />
+          </linearGradient>
+        </defs>
+
         <g transform={`translate(${view.x} ${view.y}) scale(${view.k})`}>
-          <defs>
-            <clipPath id="pmap-country-clip">
-              <path d={base.land} />
-            </clipPath>
-          </defs>
-          <path className="pmap-land" d={base.land} />
+          {/* Capa de sombra de Colombia */}
+          <path className="pmap-land-shadow" d={base.land} filter="url(#pmap-land-shadow)" />
+
+          {/* Masa continental de Colombia con gradiente natural */}
+          <path className="pmap-land" d={base.land} fill="url(#pmap-land-gradient)" />
+
+          {/* Líneas divisorias departamentales con trazo punteado sutil */}
           {deptLineOpacity > 0.02 && (
             <g
               className="pmap-depts"
@@ -251,6 +340,21 @@ export function ColombiaMap({ selectedId, onSelect }: Props) {
         </g>
       </svg>
 
+      {/* Rótulos geográficos de países vecinos y mares */}
+      {base.neighbors.map((neighbor) => {
+        const position = project(neighbor.bx, neighbor.by);
+        return (
+          <span
+            key={`neighbor-${neighbor.name}`}
+            className={`pmap-neighbor-label ${neighbor.type === "water" ? "is-water" : ""}`}
+            style={{ left: position.left, top: position.top }}
+          >
+            {neighbor.name}
+          </span>
+        );
+      })}
+
+      {/* Macro-regiones naturales */}
       {regionOpacity > 0.04 &&
         base.regions.map((region) => {
           const position = project(region.bx, region.by);
@@ -270,7 +374,8 @@ export function ColombiaMap({ selectedId, onSelect }: Props) {
           );
         })}
 
-      {deptLabelOpacity > 0.03 &&
+      {/* Rótulos sutiles de departamentos (solo visibles con zoom medio-alto) */}
+      {deptLabelOpacity > 0.05 &&
         base.departmentLabels.map((department) => {
           const position = project(department.bx, department.by);
           return (
@@ -288,93 +393,152 @@ export function ColombiaMap({ selectedId, onSelect }: Props) {
           );
         })}
 
+      {/* Marcadores circulares de experiencias de paz */}
       {mapExperiences.map((experience) => {
         const point = base.points.find((item) => item.id === experience.id);
         if (!point) return null;
         const position = project(point.bx, point.by);
         const active = experience.id === selectedId;
-        const isHovered = experience.id === hovered;
+        const isMatch = filteredIdSet.has(experience.id);
+
         return (
           <button
             key={experience.id}
             type="button"
-            className={`pmap-marker pmap-c${mapCategoryColor(experience.category)}${active ? " is-active" : ""}`}
+            className={`pmap-marker pmap-c${mapCategoryColor(experience.category)}${
+              active ? " is-active" : ""
+            }${!isMatch ? " is-dimmed" : ""}`}
             style={{ left: position.left, top: position.top }}
-            aria-label={`${experience.name}, ${experience.city}`}
+            aria-label={`${experience.school} - ${experience.name}, ${experience.city}`}
             aria-pressed={active}
+            disabled={!isMatch}
             onPointerDown={(event) => event.stopPropagation()}
             onClick={() => onSelect(experience.id)}
-            onMouseEnter={() => setHovered(experience.id)}
+            onMouseEnter={() => {
+              if (isMatch) setHovered(experience.id);
+            }}
             onMouseLeave={() =>
               setHovered((current) => (current === experience.id ? null : current))
             }
-            onFocus={() => setHovered(experience.id)}
+            onFocus={() => {
+              if (isMatch) setHovered(experience.id);
+            }}
             onBlur={() => setHovered((current) => (current === experience.id ? null : current))}
           />
         );
       })}
 
+      {/* Rótulos ordenados de colegios: sin colisiones caóticas */}
       {mapExperiences.map((experience) => {
         const point = base.points.find((item) => item.id === experience.id);
         if (!point) return null;
         const active = experience.id === selectedId;
         const isHovered = experience.id === hovered;
-        if (!showLabels && !active && !isHovered) return null;
+        const isMatch = filteredIdSet.has(experience.id);
+
+        if (!isMatch) return null;
+
+        // Si está activo o sobrevolado, SIEMPRE se muestra la etiqueta destacada
+        if (active || isHovered) {
+          const position = project(point.bx, point.by);
+          return (
+            <span
+              key={`label-active-${experience.id}`}
+              className={`pmap-label pmap-c${mapCategoryColor(experience.category)} is-active`}
+              style={{ left: position.left, top: position.top }}
+            >
+              {experience.school}
+            </span>
+          );
+        }
+
+        // Si no hay suficiente zoom, no saturar
+        if (!showLabels) return null;
+
+        // Evitar amontonar múltiples etiquetas sobre el mismo municipio (ej. Bogotá)
+        const cityKey = `${experience.city}-${Math.round(point.bx / 25)}-${Math.round(point.by / 25)}`;
+        if (renderedCities.has(cityKey) && view.k < 2.5) {
+          return null;
+        }
+        renderedCities.add(cityKey);
+
         const position = project(point.bx, point.by);
+        const labelText =
+          experience.school.length > 30 ? experience.city : experience.school;
+
         return (
           <span
             key={`label-${experience.id}`}
-            className={`pmap-label pmap-c${mapCategoryColor(experience.category)}${active || isHovered ? " is-active" : ""}`}
+            className={`pmap-label pmap-c${mapCategoryColor(experience.category)}`}
             style={{ left: position.left, top: position.top }}
           >
-            {experience.city}
+            {labelText}
           </span>
         );
       })}
 
-      {hoveredPoint && hoveredExperience && (
+      {/* Tooltip flotante al pasar el cursor */}
+      {hoveredPoint && hoveredExperience && filteredIdSet.has(hoveredExperience.id) && (
         <div className="pmap-tip" style={project(hoveredPoint.bx, hoveredPoint.by)}>
-          <strong>{hoveredExperience.name}</strong>
-          <span>
-            {hoveredExperience.city} · {hoveredExperience.department} ·{" "}
+          <strong>{hoveredExperience.school}</strong>
+          <span className="text-xs opacity-90 block">{hoveredExperience.name}</span>
+          <span className="text-[11px] opacity-75 block mt-0.5">
+            {hoveredExperience.city}, {hoveredExperience.department} · Región{" "}
             {regionOf(hoveredExperience)}
           </span>
         </div>
       )}
 
+      {/* Estado vacío cuando no hay resultados de búsqueda */}
+      {filteredExperiences.length === 0 && (
+        <div className="pmap-empty-overlay">
+          <SearchX size={32} className="mx-auto text-primary/70 mb-2" />
+          <h4>Sin colegios encontrados</h4>
+          <p>Ninguna experiencia coincide con tu búsqueda o filtros actuales.</p>
+        </div>
+      )}
+
+      {/* Controles de navegación y zoom en tarjeta compacta */}
       <div className="pmap-controls">
         <button
           type="button"
           className="pmap-zoom"
-          aria-label="Acercar"
+          title="Acercar mapa (+)"
+          aria-label="Acercar mapa"
           onPointerDown={(event) => event.stopPropagation()}
           onClick={() => zoomAt(1.4, size.w / 2, size.h / 2)}
         >
-          <Plus size={18} />
+          <Plus size={16} />
         </button>
         <button
           type="button"
           className="pmap-zoom"
-          aria-label="Alejar"
+          title="Alejar mapa (-)"
+          aria-label="Alejar mapa"
           onPointerDown={(event) => event.stopPropagation()}
           onClick={() => zoomAt(0.71, size.w / 2, size.h / 2)}
         >
-          <Minus size={18} />
+          <Minus size={16} />
         </button>
         <button
           type="button"
           className="pmap-zoom"
-          aria-label="Volver a la experiencia seleccionada"
+          title="Restablecer vista general de Colombia"
+          aria-label="Restablecer vista general de Colombia"
           onPointerDown={(event) => event.stopPropagation()}
           onClick={reset}
         >
-          <Maximize2 size={17} />
+          <Maximize2 size={15} />
         </button>
       </div>
 
-      <p className="pmap-hint">
-        Arrastra para explorar · Acerca con Ctrl + rueda para ver departamentos y ciudades
-      </p>
+      {/* Aviso amigable para zoom */}
+      {showWheelNotice && (
+        <div className="pmap-wheel-notice" role="status" aria-live="polite">
+          💡 Usa <strong>Ctrl + rueda</strong> para hacer zoom en el mapa, o usa los botones{" "}
+          <strong>+</strong> y <strong>−</strong>
+        </div>
+      )}
     </div>
   );
 }

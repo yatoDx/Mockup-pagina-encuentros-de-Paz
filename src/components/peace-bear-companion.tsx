@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import { Sparkles, Heart, Footprints, MessageSquare, Volume2, X } from 'lucide-react';
-import bear from '@/assets/peace-bear.png';
+import { useState, useEffect } from "react";
+import { Sparkles, Heart, Footprints, MessageSquare, Volume2, X } from "lucide-react";
+import bear from "@/assets/peace-bear.png";
 
 const PEACE_QUOTES = [
-  '«La palabra nos une: escuchar con respeto es el primer paso hacia la paz escolar.»',
-  '«¡En el II Encuentro 2026, los estudiantes somos los protagonistas del cambio!»',
-  '«Un círculo de diálogo desarma cualquier desacuerdo en el recreo.»',
-  '«De las aulas para el mundo: sembremos semillas de convivencia y empatía.»',
-  '«La Universidad Distrital, IPAZUD y E-PAZ tejiendo comunidad con 19 colegios.»',
-  '«¿Sabías que los jueces escolares de paz median pacíficamente entre compañeros?»',
+  "«La palabra nos une: escuchar con respeto es el primer paso hacia la paz escolar.»",
+  "«¡En el II Encuentro 2026, los estudiantes somos los protagonistas del cambio!»",
+  "«Un círculo de diálogo desarma cualquier desacuerdo en el recreo.»",
+  "«De las aulas para el mundo: sembremos semillas de convivencia y empatía.»",
+  "«La Universidad Distrital, IPAZUD y E-PAZ tejiendo comunidad con 19 colegios.»",
+  "«¿Sabías que los jueces escolares de paz median pacíficamente entre compañeros?»",
 ];
 
 interface Paw {
@@ -30,29 +30,32 @@ export function PeaceBearCompanion() {
     if (!pawsMode) return;
 
     const handleClick = (e: MouseEvent) => {
-      // Evitar crear huellas si se hace clic dentro del widget del oso o controles
+      // Evitar crear huellas solo si se hace clic dentro del widget del oso o en campos de texto editables
       const target = e.target as HTMLElement | null;
-      if (target?.closest('.peace-bear-widget') || target?.closest('button') || target?.closest('a') || target?.closest('input')) {
+      if (
+        target?.closest(".peace-bear-widget") ||
+        target?.closest('input, textarea, select, [contenteditable="true"]')
+      ) {
         return;
       }
 
       const newPaw: Paw = {
         id: Date.now() + Math.random(),
-        x: e.pageX,
-        y: e.pageY,
-        rotation: (Math.random() * 40) - 20,
+        x: e.clientX,
+        y: e.clientY,
+        rotation: Math.random() * 40 - 20,
       };
 
-      setPaws((prev) => [...prev.slice(-12), newPaw]);
+      setPaws((prev) => [...prev.slice(-15), newPaw]);
 
-      // Remover la huella después de 2.5s
+      // Remover la huella después de 2.2s
       setTimeout(() => {
         setPaws((prev) => prev.filter((p) => p.id !== newPaw.id));
-      }, 2500);
+      }, 2200);
     };
 
-    window.addEventListener('click', handleClick);
-    return () => window.removeEventListener('click', handleClick);
+    window.addEventListener("click", handleClick);
+    return () => window.removeEventListener("click", handleClick);
   }, [pawsMode]);
 
   const handleBearClick = () => {
@@ -65,7 +68,7 @@ export function PeaceBearCompanion() {
   return (
     <>
       {/* Contenedor de huellitas animadas flotantes en la página */}
-      <div className="pointer-events-none fixed inset-0 z-40 overflow-hidden" aria-hidden="true">
+      <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden" aria-hidden="true">
         {paws.map((paw) => (
           <div
             key={paw.id}
@@ -98,7 +101,10 @@ export function PeaceBearCompanion() {
       </div>
 
       {/* Widget Interactivo del Oso en la esquina inferior izquierda */}
-      <aside aria-label="Mascota del proyecto: Oso Gestor de Paz" className="peace-bear-widget fixed bottom-6 left-6 z-50 flex items-end gap-2.5">
+      <aside
+        aria-label="Mascota del proyecto: Oso Gestor de Paz"
+        className="peace-bear-widget fixed bottom-6 left-6 z-50 flex items-end gap-2.5"
+      >
         <div className="relative group">
           {/* Globo de diálogo */}
           {showSpeech && (
@@ -130,7 +136,7 @@ export function PeaceBearCompanion() {
                   onClick={() => setPawsMode(!pawsMode)}
                   className="hover:underline flex items-center gap-1"
                 >
-                  <Footprints size={11} /> {pawsMode ? 'Huellitas activas' : 'Activar huellas'}
+                  <Footprints size={11} /> {pawsMode ? "Huellitas activas" : "Activar huellas"}
                 </button>
               </div>
               {/* Flechita del globo */}
@@ -143,21 +149,17 @@ export function PeaceBearCompanion() {
             type="button"
             onClick={handleBearClick}
             aria-label="Oso Gestor de Paz interactivo: presiona para recibir un mensaje de paz"
-            className={`relative p-2 rounded-2xl bg-secondary/90 hover:bg-secondary border border-border shadow-lg transition-transform duration-300 hover:scale-110 active:scale-95 flex items-center justify-center ${
-              isWaving ? 'animate-bounce' : ''
-            }`}
+            className={`relative p-2 rounded-2xl bg-secondary/90 hover:bg-secondary border border-border shadow-lg transition-transform duration-300 hover:scale-110 active:scale-95 flex items-center justify-center ${isWaving ? "animate-bounce" : ""
+              }`}
           >
-            <img
-              src={bear}
-              alt="Oso Gestor de Paz oficial"
-              className="w-11 h-12 object-contain"
-            />
+            <img src={bear} alt="Oso Gestor de Paz oficial" className="w-11 h-12 object-contain" />
             {/* Pequeña insignia de huellita */}
             <span
-              className={`absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center shadow-xs text-white text-[10px] ${
-                pawsMode ? 'bg-primary' : 'bg-muted-foreground'
-              }`}
-              title={pawsMode ? 'Huellas interactivas activas al hacer clic' : 'Huellas desactivadas'}
+              className={`absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center shadow-xs text-white text-[10px] ${pawsMode ? "bg-primary" : "bg-muted-foreground"
+                }`}
+              title={
+                pawsMode ? "Huellas interactivas activas al hacer clic" : "Huellas desactivadas"
+              }
             >
               <Footprints size={11} />
             </span>
