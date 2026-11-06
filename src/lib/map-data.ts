@@ -9,7 +9,7 @@ export interface MapExperience {
   category: (typeof categories)[number];
   city: string;
   department: string;
-  legalNature: 'Pública' | 'Privada';
+  legalNature: "Pública" | "Privada";
   lat: number;
   lng: number;
   summary: string;
@@ -38,7 +38,9 @@ export const mapExperiences: MapExperience[] = schoolsData.map((s) => ({
   summary: s.description,
   detail: `${s.school} (${s.legalNature}) · ${s.city}, ${s.department}. Experiencia: ${s.name}. Rectoría: ${s.rectors.map((r) => r.name).join(", ")}. Tutor docente: ${s.tutors.map((t) => t.name).join(", ")}.`,
   rector: s.rectors.map((r) => `${r.name}${r.phone ? ` (${r.phone})` : ""}`).join(", "),
-  tutor: s.tutors.map((t) => `${t.name}${t.phone ? ` (${t.phone})` : ""}${t.email ? ` [${t.email}]` : ""}`).join(", "),
+  tutor: s.tutors
+    .map((t) => `${t.name}${t.phone ? ` (${t.phone})` : ""}${t.email ? ` [${t.email}]` : ""}`)
+    .join(", "),
   spokespersons: [
     ...s.primarySpokespersons.map((p) => `${p.name} (Principal)`),
     ...s.alternateSpokespersons.map((a) => `${a.name} (Suplente)`),
@@ -96,4 +98,30 @@ export const regionOf = (experience: MapExperience): MapRegionKey =>
 export const mapCategoryColor = (category: (typeof categories)[number]) => {
   const idx = categories.indexOf(category);
   return idx >= 0 ? idx : 0;
+};
+
+export const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+  "Círculos de la palabra": "Diálogo, escucha activa y acuerdos comunitarios en el aula.",
+  "Jueces de paz": "Estudiantes mediadores formados en conciliación y justicia restaurativa.",
+  "Teatro y sociodrama":
+    "Expresión escénica y juegos de rol para la empatía y la resolución de conflictos.",
+  "Semilleros de investigación": "Indagación crítica sobre realidades y memorias territoriales.",
+  "Clínicas de las emociones": "Acompañamiento socioemocional y tramitación pacífica del sentir.",
+  "Museos de la memoria": "Archivos escolares y relatos vivos comunitarios para la no repetición.",
+};
+
+export const normalizeSearchText = (text: string): string =>
+  text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+
+export const matchesExperienceSearch = (experience: MapExperience, query: string): boolean => {
+  if (!query) return true;
+  const q = normalizeSearchText(query);
+  const target = normalizeSearchText(
+    `${experience.name} ${experience.school} ${experience.city} ${experience.department} ${experience.category} ${experience.legalNature} ${experience.rector} ${experience.tutor} ${experience.spokespersons} ${regionOf(experience)} ${experience.summary}`,
+  );
+  return target.includes(q);
 };

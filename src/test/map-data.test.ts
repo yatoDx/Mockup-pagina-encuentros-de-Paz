@@ -60,3 +60,30 @@ describe("Regiones naturales del mapa", () => {
     });
   });
 });
+
+describe("Fase 2: Buscador, filtros y leyenda", () => {
+  it("normaliza texto ignorando acentos y mayúsculas", async () => {
+    const { normalizeSearchText } = await import("@/lib/map-data");
+    expect(normalizeSearchText("Bogotá")).toBe("bogota");
+    expect(normalizeSearchText("Nariño")).toBe("narino");
+    expect(normalizeSearchText("CÍRCULOS")).toBe("circulos");
+  });
+
+  it("permite buscar experiencias por colegio, ciudad, tutor o metodología", async () => {
+    const { matchesExperienceSearch } = await import("@/lib/map-data");
+    const exp = mapExperiences[0];
+    expect(matchesExperienceSearch(exp, exp.school.slice(0, 6))).toBe(true);
+    expect(matchesExperienceSearch(exp, exp.city)).toBe(true);
+    expect(matchesExperienceSearch(exp, exp.category)).toBe(true);
+    expect(matchesExperienceSearch(exp, "termino_inexistente_xyz_123")).toBe(false);
+  });
+
+  it("define descripciones para cada una de las 6 metodologías", async () => {
+    const { CATEGORY_DESCRIPTIONS } = await import("@/lib/map-data");
+    categories.forEach((cat) => {
+      expect(CATEGORY_DESCRIPTIONS[cat]).toBeDefined();
+      expect(typeof CATEGORY_DESCRIPTIONS[cat]).toBe("string");
+      expect(CATEGORY_DESCRIPTIONS[cat].length).toBeGreaterThan(10);
+    });
+  });
+});

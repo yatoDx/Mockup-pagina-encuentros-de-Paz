@@ -33,7 +33,7 @@ function Home() {
       <ExperienceMap />
 
       {/* 2. Hero principal con imagen y lema */}
-      <section className="hero">
+      <section className="hero" id="hero-section">
         <img
           className="hero-img"
           src={photo}
