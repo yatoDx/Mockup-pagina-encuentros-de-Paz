@@ -28,6 +28,8 @@ import {
   regionOf,
   CATEGORY_DESCRIPTIONS,
   matchesExperienceSearch,
+  mapRegions,
+  REGION_COLORS,
 } from "@/lib/map-data";
 import { categories } from "@/lib/peace-data";
 import { ColombiaMap } from "./colombia-map";
@@ -35,7 +37,12 @@ import "./peace-map.css";
 
 const cardImages = [photo, workshop, mural];
 
-export function ExperienceMap() {
+interface ExperienceMapProps {
+  /** Id numérico de la experiencia a enfocar al llegar desde otra página. */
+  focusNumericId?: number | undefined;
+}
+
+export function ExperienceMap({ focusNumericId }: ExperienceMapProps = {}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("Todas");
   const [region, setRegion] = useState("Todas");
@@ -45,11 +52,24 @@ export function ExperienceMap() {
   const [isExplorerMinimized, setIsExplorerMinimized] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<"category" | "region" | "nature" | null>(null);
 
-  const [selectedId, setSelectedId] = useState<string | null>(mapExperiences[0]?.id ?? null);
+  const [selectedId, setSelectedId] = useState<string | null>(() => {
+    if (focusNumericId) {
+      const target = mapExperiences.find((experience) => experience.numericId === focusNumericId);
+      if (target) return target.id;
+    }
+    return mapExperiences[0]?.id ?? null;
+  });
   const [openId, setOpenId] = useState<string | null>(null);
 
   const searchBoxRef = useRef<HTMLDivElement | null>(null);
   const legendRef = useRef<HTMLDivElement | null>(null);
+
+  // Enlace profundo desde "Nuestra red" (/?exp=ID): enfocar esa experiencia.
+  useEffect(() => {
+    if (!focusNumericId) return;
+    const target = mapExperiences.find((experience) => experience.numericId === focusNumericId);
+    if (target) setSelectedId(target.id);
+  }, [focusNumericId]);
 
   // Cerrar desplegables al hacer clic fuera
   useEffect(() => {
@@ -81,7 +101,7 @@ export function ExperienceMap() {
     if (filteredExperiences.length === 0) {
       setSelectedId(null);
     } else if (selectedId && !filteredExperiences.some((e) => e.id === selectedId)) {
-      setSelectedId(filteredExperiences[0].id);
+      setSelectedId(filteredExperiences[0]?.id ?? null);
     }
   }, [filteredExperiences, selectedId]);
 
@@ -122,7 +142,7 @@ export function ExperienceMap() {
     setShowSuggestions(false);
     setOpenAccordion(null);
     if (mapExperiences.length > 0) {
-      setSelectedId(mapExperiences[0].id);
+      setSelectedId(mapExperiences[0]?.id ?? null);
     }
   };
 
@@ -131,7 +151,7 @@ export function ExperienceMap() {
   };
 
   return (
-    <section className="pmap-outer-section" aria-label="Explorador del Territorio Escolar">
+    <section id="mapa" className="pmap-outer-section" aria-label="Explorador del Territorio Escolar">
       {/* Elementos botánicos decorativos de fondo en las esquinas */}
       <svg
         className="botanical-leaf botanical-top-left"
@@ -241,6 +261,17 @@ export function ExperienceMap() {
                   })}
                 </div>
                 <div className="popover-symbology">
+                  <div className="popover-subhead">Regiones naturales</div>
+                  {mapRegions.map((naturalRegion) => (
+                    <div className="sym-item" key={naturalRegion.key}>
+                      <span
+                        className="sym-region"
+                        style={{ background: REGION_COLORS[naturalRegion.key] }}
+                      />
+                      <span>{naturalRegion.key}</span>
+                    </div>
+                  ))}
+                  <div className="popover-subhead">Simbología</div>
                   <div className="sym-item">
                     <span className="sym-ring" />
                     <span>Colegio seleccionado</span>
@@ -319,7 +350,7 @@ export function ExperienceMap() {
                     }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && filteredExperiences[0]) {
-                        setSelectedId(filteredExperiences[0].id);
+                        setSelectedId(filteredExperiences[0]?.id ?? null);
                         setShowSuggestions(false);
                       } else if (e.key === "Escape") {
                         setShowSuggestions(false);

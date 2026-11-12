@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Search, Building2, MapPin, Mail, Phone, Users, ExternalLink, ShieldCheck } from 'lucide-react';
-import { schoolsData, type SchoolRecord } from '@/lib/schools-data';
+import { Link } from '@tanstack/react-router';
+import { Search, Building2, MapPin, ShieldCheck } from 'lucide-react';
+import { schoolsData } from '@/lib/schools-data';
 import { Button } from '@/components/ui/button';
 
 export function SchoolsDirectory() {
@@ -16,7 +17,7 @@ export function SchoolsDirectory() {
     const matchesLegal = legalFilter === 'Todas' || item.legalNature === legalFilter;
     const matchesDept = selectedDept === 'Todos' || item.department === selectedDept;
 
-    const searchable = `${item.school} ${item.name} ${item.city} ${item.department} ${item.legalNature} ${item.rectors.map((r) => r.name).join(' ')} ${item.tutors.map((t) => t.name).join(' ')} ${item.institutionalEmail}`.toLocaleLowerCase('es');
+    const searchable = `${item.school} ${item.name} ${item.city} ${item.department} ${item.legalNature} ${item.category}`.toLocaleLowerCase('es');
     const matchesQuery = normalizedQuery === '' || searchable.includes(normalizedQuery);
 
     return matchesLegal && matchesDept && matchesQuery;
@@ -33,6 +34,11 @@ export function SchoolsDirectory() {
           <p className="text-muted-foreground text-sm max-w-2xl mt-1">
             Conoce las 20 instituciones educativas y organizaciones de 8 departamentos que forman la red nacional de gestores de paz escolares.
           </p>
+          <p className="mt-2 flex max-w-2xl items-start gap-1.5 text-xs text-muted-foreground">
+            <ShieldCheck size={14} className="mt-0.5 shrink-0 text-primary" />
+            Por protección de datos no publicamos nombres, teléfonos ni correos de la comunidad
+            educativa. Usa «Ver en el mapa» para ubicar cada institución.
+          </p>
         </div>
         <div className="text-xs text-muted-foreground bg-secondary/80 px-3 py-2 rounded-lg border self-start sm:self-end">
           Total: <strong className="text-foreground">{filtered.length}</strong> de {schoolsData.length} registros
@@ -45,7 +51,7 @@ export function SchoolsDirectory() {
             <Search size={16} className="text-muted-foreground" />
             <input
               aria-label="Buscar colegios o participantes"
-              placeholder="Buscar por colegio, ciudad, rector, tutor o experiencia…"
+              placeholder="Buscar por colegio, ciudad o experiencia…"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="bg-transparent border-0 outline-none w-full text-sm"
@@ -58,8 +64,12 @@ export function SchoolsDirectory() {
               <Button
                 key={filter}
                 size="sm"
-                variant={legalFilter === filter ? 'default' : 'outline'}
-                className="h-8 text-xs"
+                variant="outline"
+                className={`h-8 text-xs ${
+                  legalFilter === filter
+                    ? 'chip-filter-active border-link bg-link text-white hover:bg-link-strong hover:text-white'
+                    : ''
+                }`}
                 onClick={() => setLegalFilter(filter)}
               >
                 {filter}
@@ -77,7 +87,7 @@ export function SchoolsDirectory() {
               onClick={() => setSelectedDept(dept)}
               className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                 selectedDept === dept
-                  ? 'bg-primary text-primary-foreground border-primary font-medium'
+                  ? 'chip-filter-active bg-link text-white border-link font-medium'
                   : 'bg-background hover:bg-muted text-muted-foreground border-border'
               }`}
             >
@@ -113,7 +123,7 @@ export function SchoolsDirectory() {
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider bg-accent text-primary px-2 py-0.5 rounded">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider bg-[#EFE7F0] text-[#6A4A6C] px-2 py-0.5 rounded">
                     {item.legalNature}
                   </span>
                   <span className="text-[11px] font-mono text-muted-foreground">
@@ -126,7 +136,7 @@ export function SchoolsDirectory() {
                 </h3>
 
                 <p className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
-                  <MapPin size={13} className="text-primary shrink-0" />
+                  <MapPin size={13} className="text-[#C17A52] shrink-0" />
                   <span>{item.city}, {item.department}</span>
                 </p>
 
@@ -137,68 +147,23 @@ export function SchoolsDirectory() {
                   <p className="text-xs font-medium text-foreground line-clamp-2" title={item.name}>
                     {item.name}
                   </p>
-                  <span className="inline-block text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded mt-1 font-medium">
+                  <span className="inline-block text-[10px] text-link bg-link-soft px-1.5 py-0.5 rounded mt-1 font-medium">
                     {item.category}
                   </span>
                 </div>
-
-                <div className="space-y-2 text-xs bg-muted/30 p-2.5 rounded border mb-3">
-                  <div>
-                    <span className="text-muted-foreground block text-[10px] uppercase font-semibold">
-                      Rectoría
-                    </span>
-                    <span className="font-medium text-foreground">
-                      {item.rectors.map((r) => r.name).join(', ')}
-                    </span>
-                    {item.rectors[0]?.phone && (
-                      <span className="text-muted-foreground text-[11px] block">
-                        Tel: {item.rectors[0].phone}
-                      </span>
-                    )}
-                  </div>
-
-                  <div>
-                    <span className="text-muted-foreground block text-[10px] uppercase font-semibold">
-                      Docente Tutor
-                    </span>
-                    <span className="font-medium text-foreground">
-                      {item.tutors.map((t) => t.name).join(', ')}
-                    </span>
-                    {item.tutors[0]?.phone && (
-                      <span className="text-muted-foreground text-[11px] block">
-                        Tel: {item.tutors[0].phone}
-                      </span>
-                    )}
-                  </div>
-
-                  <div>
-                    <span className="text-muted-foreground block text-[10px] uppercase font-semibold">
-                      Voceros Principales
-                    </span>
-                    <span className="text-foreground">
-                      {item.primarySpokespersons.map((s) => s.name).join(' · ')}
-                    </span>
-                  </div>
-                </div>
               </div>
 
-              <div className="border-t pt-2.5 flex items-center justify-between text-xs text-muted-foreground">
-                {item.institutionalEmail && item.institutionalEmail.includes('@') ? (
-                  <a
-                    href={`mailto:${item.institutionalEmail}`}
-                    className="flex items-center gap-1.5 text-primary hover:underline truncate max-w-[200px]"
-                    title={`Escribir a ${item.institutionalEmail}`}
-                  >
-                    <Mail size={13} className="shrink-0" />
-                    <span className="truncate">{item.institutionalEmail}</span>
-                  </a>
-                ) : (
-                  <span className="flex items-center gap-1.5 text-muted-foreground">
-                    <Phone size={13} className="shrink-0" />
-                    <span>{item.institutionalEmail || 'Contacto vía rectoría'}</span>
-                  </span>
-                )}
+              <div className="mt-4 flex items-center justify-between gap-2 border-t pt-3">
                 <span className="text-[10px] text-muted-foreground">Colombia</span>
+                <Link
+                  to="/"
+                  search={{ exp: item.id }}
+                  hash="mapa"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                  title={`Ver ${item.school} en el mapa`}
+                >
+                  <MapPin size={13} /> Ver en el mapa
+                </Link>
               </div>
             </article>
           ))}

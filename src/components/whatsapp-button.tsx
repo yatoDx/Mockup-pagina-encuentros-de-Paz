@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { MessageCircle, X, Send, ShieldCheck, Sparkles } from 'lucide-react';
 import bear from '@/assets/peace-bear.png';
+import { useFloatingWidgetsHidden } from './use-floating-widgets';
 
 export function WhatsAppFloatingButton() {
   const [isOpen, setIsOpen] = useState(false);
+  const hidden = useFloatingWidgetsHidden();
 
   const defaultMessage = encodeURIComponent(
     'Hola equipo de Gestores de Paz Escolares (IPAZUD / U. Distrital / E-PAZ). Me comunico para solicitar información sobre la vinculación de colegios al II Encuentro de Gestores de Paz.'
@@ -11,7 +13,13 @@ export function WhatsAppFloatingButton() {
   const whatsappUrl = `https://wa.me/573001234567?text=${defaultMessage}`;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div
+      aria-hidden={hidden || undefined}
+      inert={hidden}
+      className={`fixed bottom-6 right-6 z-50 flex flex-col items-end transition-all duration-300 ${
+        hidden ? 'pointer-events-none translate-y-6 opacity-0' : 'translate-y-0 opacity-100'
+      }`}
+    >
       {/* Popover / Chat Card */}
       {isOpen && (
         <div className="mb-3 w-80 sm:w-88 bg-background border border-border rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200">

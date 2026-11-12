@@ -68,32 +68,66 @@ export const mapRegions: MapRegion[] = [
   { key: "Amazonía", lat: -1.4, lng: -73.3 },
 ];
 
-/** Asignación de departamentos a su región natural */
+/** Asignación de los 32 departamentos continentales a su región natural */
 const DEPARTMENT_REGION: Record<string, MapRegionKey> = {
-  Cundinamarca: "Andina",
+  // Andina
+  Antioquia: "Andina",
   Bogotá: "Andina",
   "Bogotá D.C.": "Andina",
-  Antioquia: "Andina",
-  Santander: "Andina",
+  Boyacá: "Andina",
+  Caldas: "Andina",
+  Cundinamarca: "Andina",
   Huila: "Andina",
   "Norte de Santander": "Andina",
-  "Valle del Cauca": "Pacífico",
-  Nariño: "Pacífico",
-  Chocó: "Pacífico",
-  Cauca: "Pacífico",
+  Quindío: "Andina",
+  Risaralda: "Andina",
+  Santander: "Andina",
+  Tolima: "Andina",
+  // Caribe
   Atlántico: "Caribe",
   Bolívar: "Caribe",
-  Magdalena: "Caribe",
-  "La Guajira": "Caribe",
+  Cesar: "Caribe",
   Córdoba: "Caribe",
+  "La Guajira": "Caribe",
+  Magdalena: "Caribe",
   Sucre: "Caribe",
+  // Pacífico
+  Cauca: "Pacífico",
+  Chocó: "Pacífico",
+  Nariño: "Pacífico",
+  "Valle del Cauca": "Pacífico",
+  // Orinoquía
+  Arauca: "Orinoquía",
+  Casanare: "Orinoquía",
   Meta: "Orinoquía",
-  Caquetá: "Amazonía",
+  Vichada: "Orinoquía",
+  // Amazonía
   Amazonas: "Amazonía",
+  Caquetá: "Amazonía",
+  Guainía: "Amazonía",
+  Guaviare: "Amazonía",
+  Putumayo: "Amazonía",
+  Vaupés: "Amazonía",
+};
+
+/**
+ * Colores suaves por región natural. Se usan para teñir los departamentos
+ * del mapa sin romper la paleta institucional (verdes, tierras y azules).
+ */
+export const REGION_COLORS: Record<MapRegionKey, string> = {
+  Caribe: "oklch(0.85 0.11 78)",
+  Pacífico: "oklch(0.82 0.09 225)",
+  Andina: "oklch(0.84 0.11 150)",
+  Orinoquía: "oklch(0.87 0.12 108)",
+  Amazonía: "oklch(0.79 0.12 168)",
 };
 
 export const regionOf = (experience: MapExperience): MapRegionKey =>
   DEPARTMENT_REGION[experience.department] ?? "Andina";
+
+/** Región natural de un departamento por su nombre (usado por el mapa). */
+export const regionOfDepartment = (department: string): MapRegionKey =>
+  DEPARTMENT_REGION[department] ?? "Andina";
 
 export const mapCategoryColor = (category: (typeof categories)[number]) => {
   const idx = categories.indexOf(category);

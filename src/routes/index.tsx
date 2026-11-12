@@ -11,6 +11,10 @@ import { InstitutionalLogosBanner } from '@/components/institutional-logos';
 import { QuienesSomosSection } from '@/components/quienes-somos';
 
 export const Route = createFileRoute('/')({
+  validateSearch: (search: Record<string, unknown>): { exp?: number } => {
+    const raw = Number(search["exp"]);
+    return Number.isFinite(raw) && raw > 0 ? { exp: raw } : {};
+  },
   head: () =>
     peaceHead(
       'Inicio',
@@ -20,6 +24,7 @@ export const Route = createFileRoute('/')({
 });
 
 function Home() {
+  const { exp } = Route.useSearch();
   const [selected, setSelected] = useState<number | null>(null);
   const [category, setCategory] = useState('Todas');
   const shown =
@@ -30,7 +35,7 @@ function Home() {
   return (
     <PeaceLayout>
       {/* 1. Mapa interactivo de Colombia */}
-      <ExperienceMap />
+      <ExperienceMap focusNumericId={exp} />
 
       {/* 2. Hero principal con imagen y lema */}
       <section className="hero" id="hero-section">

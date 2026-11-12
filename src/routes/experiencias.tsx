@@ -8,17 +8,17 @@ import { Button } from "@/components/ui/button";
 import { categories, experiences } from "@/lib/peace-data";
 
 interface ExperienciasSearch {
-  id?: number;
-  q?: string;
+  id?: number | undefined;
+  q?: string | undefined;
 }
 
 export const Route = createFileRoute("/experiencias")({
   validateSearch: (search: Record<string, unknown>): ExperienciasSearch => {
-    const rawId = search.id;
+    const rawId = search["id"];
     const numId = rawId !== undefined && rawId !== null ? Number(rawId) : undefined;
     return {
       id: Number.isFinite(numId) ? numId : undefined,
-      q: typeof search.q === "string" ? search.q : undefined,
+      q: typeof search["q"] === "string" ? search["q"] : undefined,
     };
   },
   head: () =>
@@ -57,6 +57,7 @@ function Experiencias() {
       }, 150);
       return () => clearTimeout(timer);
     }
+    return;
   }, [search.id]);
 
   const normalizedQuery = query.trim().toLocaleLowerCase("es");

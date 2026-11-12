@@ -157,6 +157,12 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* Relleno pastel por región natural: aporta color al territorio */
+.pmap-dept-fills {
+  fill-opacity: 0.55;
+  stroke: none;
+}
+
 /* Rótulos geográficos de países vecinos y mares */
 .pmap-neighbor-label {
   position: absolute;
@@ -189,13 +195,13 @@
   font-weight: 800;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--pmap-land-line);
+  color: oklch(0.42 0.06 155 / 0.82);
   white-space: nowrap;
   pointer-events: none;
   z-index: 1;
   text-shadow:
-    0 1px 0 oklch(1 0 0 / 0.5),
-    0 0 10px oklch(1 0 0 / 0.7);
+    0 1px 0 oklch(1 0 0 / 0.55),
+    0 0 10px oklch(1 0 0 / 0.75);
 }
 
 .pmap-region.is-active {
@@ -981,6 +987,27 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.popover-subhead {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin: 4px 0 1px;
+}
+
+.popover-subhead:first-child {
+  margin-top: 0;
+}
+
+.sym-region {
+  width: 15px;
+  height: 11px;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
 }
 
 .sym-item {

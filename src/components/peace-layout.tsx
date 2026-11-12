@@ -1,5 +1,6 @@
 import { Link, useLocation } from '@tanstack/react-router';
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { ArrowUpRight, Menu, X, HeartHandshake, Youtube, Facebook, MessageCircle, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import bear from '@/assets/peace-bear.png';
@@ -138,7 +139,7 @@ export function PeaceLayout({ children }: { children: React.ReactNode }) {
                   href="https://www.youtube.com/@ipazuduniversidaddistrital"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-red-600 hover:bg-muted transition-colors"
+                  className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-600 hover:bg-red-100 transition-colors"
                   title="Canal de YouTube IPAZUD"
                 >
                   <Youtube size={16} />
@@ -147,7 +148,7 @@ export function PeaceLayout({ children }: { children: React.ReactNode }) {
                   href="https://www.facebook.com/ipazud"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-blue-700 hover:bg-muted transition-colors"
+                  className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 hover:bg-blue-100 transition-colors"
                   title="Facebook IPAZUD"
                 >
                   <Facebook size={16} />
@@ -156,7 +157,7 @@ export function PeaceLayout({ children }: { children: React.ReactNode }) {
                   href="https://wa.me/573001234567"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-emerald-600 hover:bg-muted transition-colors"
+                  className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 hover:bg-emerald-100 transition-colors"
                   title="Canal de WhatsApp Gestores de Paz"
                 >
                   <MessageCircle size={16} />
@@ -183,6 +184,15 @@ export function PeaceLayout({ children }: { children: React.ReactNode }) {
               </a>
             </div>
           </div>
+          <div className="mt-4 flex flex-col items-center justify-between gap-1 text-[10.5px] text-muted-foreground sm:flex-row">
+            <span>
+              Desarrollado por{' '}
+              <strong className="font-semibold text-foreground">
+                Juan Esteban Buitrago, Helberth Garcia, Camilo
+              </strong>
+            </span>
+            <span>Noviembre de 2026</span>
+          </div>
         </div>
       </footer>
 
@@ -197,17 +207,24 @@ export function PageHeading({
   label,
   title,
   description,
+  aside,
 }: {
   label: string;
   title: string;
   description: string;
+  aside?: ReactNode;
 }) {
   return (
     <section className="page-heading">
       <div className="wrap">
         <div className="eyebrow">{label}</div>
-        <h1>{title}</h1>
-        <p>{description}</p>
+        <div className="page-heading-row">
+          <div>
+            <h1>{title}</h1>
+            <p>{description}</p>
+          </div>
+          {aside}
+        </div>
       </div>
     </section>
   );
