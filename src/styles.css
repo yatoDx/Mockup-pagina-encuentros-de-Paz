@@ -44,25 +44,25 @@ body{overflow-x:clip}
 :root{
   /* Paleta institucional: verde, azul, terracota, ocre y malva */
   --tone-leaf:#245C3A;          /* verde principal */
-  --tone-leaf-soft:#E3EFE7;     /* verde claro */
+  --tone-leaf-soft:#EAF2EC;     /* verde suave */
   --tone-leaf-ink:#1B4A2F;
   --tone-sky:#356A9A;           /* azul secundario */
-  --tone-sky-soft:#E4ECF4;      /* azul claro */
+  --tone-sky-soft:#EAF0F7;      /* azul suave */
   --tone-sky-ink:#2A557D;
   --tone-clay:#C17A52;          /* terracota */
-  --tone-clay-soft:#F9E9DE;     /* durazno */
+  --tone-clay-soft:#FAEEE8;     /* durazno suave */
   --tone-clay-ink:#8F5233;
   --tone-sun:#B18A42;           /* ocre */
-  --tone-sun-soft:#F6EFDF;      /* crema */
+  --tone-sun-soft:#F7F1E5;      /* crema */
   --tone-sun-ink:#7E6029;
   --tone-berry:#815D83;         /* malva complementario */
-  --tone-berry-soft:#EFE7F0;    /* malva claro */
+  --tone-berry-soft:#F2EDF3;    /* malva suave */
   --tone-berry-ink:#6A4A6C;
   /* Alias de tonalidades suaves para fondos y tarjetas */
   --soft-green:var(--tone-leaf-soft);
   --soft-blue:var(--tone-sky-soft);
   --soft-peach:var(--tone-clay-soft);
-  --soft-cream:var(--tone-sun-soft);
+  --soft-cream:#F7F3EA;
   --soft-mauve:var(--tone-berry-soft);
 }
 
@@ -154,22 +154,13 @@ body{overflow-x:clip}
 /* Encabezado de páginas internas */
 .page-heading{
   position:relative;
-  overflow:hidden;
-  background:
-    radial-gradient(560px 220px at 6% 0%,color-mix(in oklch,var(--tone-sun) 42%,transparent),transparent 70%),
-    radial-gradient(560px 240px at 94% 8%,color-mix(in oklch,var(--tone-sky) 38%,transparent),transparent 72%),
-    linear-gradient(180deg,color-mix(in oklch,var(--secondary) 78%,white),var(--background));
-  border-bottom:1px solid var(--border);
+  background:var(--soft-green);
+  border-bottom:1px solid color-mix(in oklch,var(--tone-leaf) 22%,var(--border));
 }
-.page-heading:after{
-  content:'';
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
-  height:4px;
-  background:linear-gradient(90deg,var(--tone-leaf),var(--tone-sun) 42%,var(--tone-clay) 68%,var(--tone-sky));
-  opacity:.75;
+.page-heading .eyebrow{
+  background:var(--soft-mauve);
+  border-color:color-mix(in oklch,var(--tone-berry) 20%,transparent);
+  color:var(--tone-berry-ink);
 }
 
 /* Encuentros */
@@ -307,9 +298,9 @@ body{overflow-x:clip}
   border-top-color:color-mix(in oklch,var(--tone-leaf) 26%,var(--border));
 }
 .qs-badge-alianza{
-  background:linear-gradient(135deg,color-mix(in oklch,var(--tone-sun) 30%,white),color-mix(in oklch,var(--tone-leaf) 18%,white));
-  border-color:color-mix(in oklch,var(--tone-sun) 48%,var(--border));
-  box-shadow:0 8px 18px -12px color-mix(in oklch,var(--tone-sun) 65%,transparent);
+  background:#FFFFFF;
+  border-color:#D5E2D8;
+  box-shadow:none;
 }
 .qs-badge-row{display:flex;justify-content:flex-start}
 
@@ -344,24 +335,25 @@ body{overflow-x:clip}
 }
 
 .qs-nav-tabs{
-  border-bottom-color:color-mix(in oklch,var(--tone-sky) 28%,var(--border));
+  border-bottom-color:color-mix(in oklch,var(--tone-leaf) 22%,var(--border));
 }
 .qs-tab-btn{
   border:1px solid transparent;
   border-bottom:2px solid transparent;
+  color:var(--foreground);
 }
 .qs-tab-btn:hover{
-  color:var(--tone-sky-ink);
-  background:color-mix(in oklch,var(--tone-sky) 12%,white);
-  border-color:color-mix(in oklch,var(--tone-sky) 28%,var(--border));
-  border-bottom-color:color-mix(in oklch,var(--tone-sky) 45%,var(--border));
+  color:var(--tone-leaf);
+  background:var(--soft-green);
+  border-color:color-mix(in oklch,var(--tone-leaf) 16%,var(--border));
+  border-bottom-color:color-mix(in oklch,var(--tone-leaf) 38%,var(--border));
 }
 .qs-tab-btn.active{
-  color:var(--primary-foreground);
+  color:var(--tone-leaf);
   border-color:transparent;
-  border-bottom-color:color-mix(in oklch,var(--tone-sun) 70%,var(--tone-sky));
-  background:linear-gradient(135deg,var(--tone-sky-ink),var(--tone-sky));
-  box-shadow:0 10px 20px -14px color-mix(in oklch,var(--tone-sky) 90%,transparent);
+  border-bottom-color:var(--tone-leaf);
+  background:color-mix(in oklch,var(--tone-leaf) 12%,white);
+  box-shadow:none;
 }
 .qs-entity-card{
   background:linear-gradient(165deg,color-mix(in oklch,var(--tone-leaf) 22%,white),color-mix(in oklch,var(--secondary) 60%,white) 70%);
@@ -441,24 +433,74 @@ body{overflow-x:clip}
 
 /* Avisos y pestañas */
 .notice{
-  background:color-mix(in oklch,var(--highlight) 10%,transparent);
+  background:var(--soft-cream);
   border-left:3px solid var(--highlight);
   padding:12px 16px;
   border-radius:0 8px 8px 0;
 }
+/* Pestañas: verde institucional como color de selección */
+.section-tabs{
+  border-bottom-color:color-mix(in oklch,var(--tone-leaf) 20%,var(--border));
+}
+.section-tabs button{
+  color:var(--foreground);
+  border-radius:6px 6px 0 0;
+}
+.section-tabs button:hover{
+  color:var(--tone-leaf);
+  background:var(--soft-green);
+}
 .section-tabs .active{
-  color:var(--tone-sky-ink);
-  border-bottom-color:var(--tone-sky);
-  background:linear-gradient(90deg,color-mix(in oklch,var(--tone-sky) 12%,transparent),transparent);
+  color:var(--tone-leaf);
+  border-bottom-color:var(--tone-leaf);
+  border-radius:6px 6px 0 0;
+  background:var(--soft-green);
 }
 
-/* Galería */
+/* Galería: detalles de color en etiquetas e indicadores, fondos neutros */
 .gallery-item img{
-  border:1px solid color-mix(in oklch,var(--tone-leaf) 16%,var(--border));
-  box-shadow:0 10px 24px -18px oklch(.3 .04 155 / .45);
+  border:1px solid var(--border);
+  box-shadow:0 6px 18px -16px oklch(.3 .04 155 / .35);
 }
+.gallery-item p{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  width:fit-content;
+  margin:10px 0 0;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:600;
+  line-height:1.5;
+  background:var(--soft-peach);
+  color:var(--tone-clay-ink);
+}
+.gallery-item p:before{
+  content:'';
+  flex:0 0 auto;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--tone-clay);
+}
+.gallery-item:nth-child(2n) p{
+  background:var(--soft-blue);
+  color:var(--tone-sky-ink);
+}
+.gallery-item:nth-child(2n) p:before{background:var(--tone-sky)}
+.gallery-item:nth-child(3n) p{
+  background:var(--soft-mauve);
+  color:var(--tone-berry-ink);
+}
+.gallery-item:nth-child(3n) p:before{background:var(--tone-berry)}
+.gallery-item:nth-child(4n) p{
+  background:var(--soft-cream);
+  color:var(--tone-sun-ink);
+}
+.gallery-item:nth-child(4n) p:before{background:var(--tone-sun)}
 .poster{
-  background:linear-gradient(140deg,color-mix(in oklch,var(--tone-sky) 10%,white),color-mix(in oklch,var(--tone-sun) 12%,white));
+  background:var(--secondary);
 }
 
 /* Buscador y formularios */

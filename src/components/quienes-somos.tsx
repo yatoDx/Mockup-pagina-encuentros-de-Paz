@@ -65,16 +65,6 @@ export function QuienesSomosSection({ showIntro = true }: { showIntro?: boolean 
           )}
         </div>
 
-        {/* Pista visible de interacción */}
-        {!hasExplored && (
-          <div className="qs-tab-hint" role="note">
-            <MousePointerClick size={17} className="qs-tab-hint-icon" aria-hidden="true" />
-            <span>
-              <strong>Pincha aquí:</strong> toca cada pestaña para conocer la alianza, la trayectoria, la red de colegios y los pilares.
-            </span>
-          </div>
-        )}
-
         {/* Pestañas de Navegación del Módulo */}
         <div className="qs-nav-tabs" role="tablist">
           <button
