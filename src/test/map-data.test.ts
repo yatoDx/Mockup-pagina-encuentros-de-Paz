@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { mapExperiences, mapRegions, regionOf, mapCategoryColor } from "@/lib/map-data";
+import {
+  mapExperiences,
+  mapRegions,
+  regionOf,
+  mapCategoryColor,
+  regionOfDepartment,
+  REGION_COLORS,
+} from "@/lib/map-data";
+import { colombiaDepartments } from "@/lib/colombia-departments-geo";
 import { categories } from "@/lib/peace-data";
 
 const COLOMBIA_BOUNDS = { minLat: -4.3, maxLat: 13.5, minLng: -82, maxLng: -66 };
@@ -59,6 +67,16 @@ describe("Regiones naturales del mapa", () => {
       expect(keys.has(regionOf(point))).toBe(true);
     });
   });
+
+  it("asigna los 32 departamentos a una región con color propio", () => {
+    const keys = new Set(mapRegions.map((region) => region.key));
+    expect(colombiaDepartments.features).toHaveLength(32);
+    colombiaDepartments.features.forEach((feature) => {
+      const region = regionOfDepartment(feature.properties.name);
+      expect(keys.has(region)).toBe(true);
+      expect(REGION_COLORS[region]).toMatch(/^oklch\(/);
+    });
+  });
 });
 
 describe("Fase 2: Buscador, filtros y leyenda", () => {
@@ -71,7 +89,7 @@ describe("Fase 2: Buscador, filtros y leyenda", () => {
 
   it("permite buscar experiencias por colegio, ciudad, tutor o metodología", async () => {
     const { matchesExperienceSearch } = await import("@/lib/map-data");
-    const exp = mapExperiences[0];
+    const exp = mapExperiences[0]!;
     expect(matchesExperienceSearch(exp, exp.school.slice(0, 6))).toBe(true);
     expect(matchesExperienceSearch(exp, exp.city)).toBe(true);
     expect(matchesExperienceSearch(exp, exp.category)).toBe(true);
@@ -81,9 +99,10 @@ describe("Fase 2: Buscador, filtros y leyenda", () => {
   it("define descripciones para cada una de las 6 metodologías", async () => {
     const { CATEGORY_DESCRIPTIONS } = await import("@/lib/map-data");
     categories.forEach((cat) => {
-      expect(CATEGORY_DESCRIPTIONS[cat]).toBeDefined();
-      expect(typeof CATEGORY_DESCRIPTIONS[cat]).toBe("string");
-      expect(CATEGORY_DESCRIPTIONS[cat].length).toBeGreaterThan(10);
+      const description = CATEGORY_DESCRIPTIONS[cat];
+      expect(description).toBeDefined();
+      expect(typeof description).toBe("string");
+      expect(description!.length).toBeGreaterThan(10);
     });
   });
 });

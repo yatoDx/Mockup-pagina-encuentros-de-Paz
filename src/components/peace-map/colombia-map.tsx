@@ -9,6 +9,8 @@ import {
   mapExperiences,
   mapRegions,
   regionOf,
+  regionOfDepartment,
+  REGION_COLORS,
   type MapExperience,
 } from "@/lib/map-data";
 
@@ -71,6 +73,7 @@ export function ColombiaMap({ selectedId, onSelect, filteredExperiences }: Props
   const [hovered, setHovered] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const [showWheelNotice, setShowWheelNotice] = useState(false);
+  const [measured, setMeasured] = useState(false);
 
   const filteredIdSet = useMemo(
     () => new Set(filteredExperiences.map((e) => e.id)),
@@ -84,6 +87,7 @@ export function ColombiaMap({ selectedId, onSelect, filteredExperiences }: Props
       const rect = el.getBoundingClientRect();
       if (rect.width > 0 && rect.height > 0) {
         setSize({ w: Math.round(rect.width), h: Math.round(rect.height) });
+        setMeasured(true);
       }
     };
     measure();
@@ -190,10 +194,15 @@ export function ColombiaMap({ selectedId, onSelect, filteredExperiences }: Props
         const projected = projection([region.lng, region.lat]) ?? [0, 0];
         return { key: region.key, bx: projected[0], by: projected[1] };
       }),
-      departments: colombiaDepartments.features.map((feature) => ({
-        name: feature.properties.name,
-        d: path(feature) ?? "",
-      })),
+      departments: colombiaDepartments.features.map((feature) => {
+        const region = regionOfDepartment(feature.properties.name);
+        return {
+          name: feature.properties.name,
+          region,
+          fill: REGION_COLORS[region],
+          d: path(feature) ?? "",
+        };
+      }),
       departmentLabels: colombiaDepartments.features
         .map((feature) => {
           const projected = projection(geoCentroid(feature));
@@ -211,12 +220,12 @@ export function ColombiaMap({ selectedId, onSelect, filteredExperiences }: Props
   }, [size.w, size.h]);
 
   useIsomorphicLayoutEffect(() => {
-    if (!selectedId || selectedId === lastSelectionRef.current) return;
+    if (!measured || !selectedId || selectedId === lastSelectionRef.current) return;
     lastSelectionRef.current = selectedId;
     const point = base.points.find((item) => item.id === selectedId);
     if (!point) return;
     setView((current) => focusOn(point.bx, point.by, Math.max(current.k, FOCUS_K)));
-  }, [selectedId, base.points, focusOn]);
+  }, [measured, selectedId, base.points, focusOn]);
 
   const project = (bx: number, by: number) => ({
     left: view.x + view.k * bx,
@@ -324,6 +333,17 @@ export function ColombiaMap({ selectedId, onSelect, filteredExperiences }: Props
 
           {/* Masa continental de Colombia con gradiente natural */}
           <path className="pmap-land" d={base.land} fill="url(#pmap-land-gradient)" />
+
+          {/* Relleno por región natural: da color al territorio sin saturarlo */}
+          <g className="pmap-dept-fills" clipPath="url(#pmap-country-clip)">
+            {base.departments.map((department) => (
+              <path
+                key={`fill-${department.name}`}
+                d={department.d}
+                style={{ fill: department.fill }}
+              />
+            ))}
+          </g>
 
           {/* Líneas divisorias departamentales con trazo punteado sutil */}
           {deptLineOpacity > 0.02 && (

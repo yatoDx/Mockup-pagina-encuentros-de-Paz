@@ -108,7 +108,7 @@ function Red() {
               Universidad Distrital Francisco José de Caldas
             </p>
             <p className="mt-4">Contacto del encuentro, según el afiche oficial:</p>
-            <Button variant="link" className="px-0 text-primary" asChild>
+            <Button variant="link" className="px-0" asChild>
               <a href="mailto:gestorespazbogota@gmail.com">
                 <Mail /> gestorespazbogota@gmail.com
               </a>

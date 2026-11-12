@@ -22,7 +22,7 @@ function QuienesSomosPage() {
         description="Conoce la trayectoria de los Encuentros de Gestores de Paz Escolares, la alianza entre la Universidad Distrital, IPAZUD y la Corporación E-PAZ, y la red de colegios participantes."
       />
       <InstitutionalLogosBanner />
-      <QuienesSomosSection />
+      <QuienesSomosSection showIntro={false} />
       <CanalesRedesSection />
     </PeaceLayout>
   );

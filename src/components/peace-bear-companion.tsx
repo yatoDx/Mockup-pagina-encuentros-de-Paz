@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Sparkles, Heart, Footprints, MessageSquare, Volume2, X } from "lucide-react";
 import bear from "@/assets/peace-bear.png";
+import { useFloatingWidgetsHidden } from "./use-floating-widgets";
 
 const PEACE_QUOTES = [
   "«La palabra nos une: escuchar con respeto es el primer paso hacia la paz escolar.»",
@@ -24,6 +25,7 @@ export function PeaceBearCompanion() {
   const [pawsMode, setPawsMode] = useState(true);
   const [paws, setPaws] = useState<Paw[]>([]);
   const [isWaving, setIsWaving] = useState(false);
+  const hidden = useFloatingWidgetsHidden();
 
   // Huellitas al hacer clic en cualquier parte cuando pawsMode está activo
   useEffect(() => {
@@ -103,7 +105,11 @@ export function PeaceBearCompanion() {
       {/* Widget Interactivo del Oso en la esquina inferior izquierda */}
       <aside
         aria-label="Mascota del proyecto: Oso Gestor de Paz"
-        className="peace-bear-widget fixed bottom-6 left-6 z-50 flex items-end gap-2.5"
+        aria-hidden={hidden || undefined}
+        inert={hidden}
+        className={`peace-bear-widget fixed bottom-6 left-6 z-50 flex items-end gap-2.5 transition-all duration-300 ${
+          hidden ? "pointer-events-none translate-y-6 opacity-0" : "translate-y-0 opacity-100"
+        }`}
       >
         <div className="relative group">
           {/* Globo de diálogo */}
