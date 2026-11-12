@@ -1,5 +1,6 @@
 import { Link, useLocation } from '@tanstack/react-router';
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { ArrowUpRight, Menu, X, HeartHandshake, Youtube, Facebook, MessageCircle, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import bear from '@/assets/peace-bear.png';
@@ -206,17 +207,24 @@ export function PageHeading({
   label,
   title,
   description,
+  aside,
 }: {
   label: string;
   title: string;
   description: string;
+  aside?: ReactNode;
 }) {
   return (
     <section className="page-heading">
       <div className="wrap">
         <div className="eyebrow">{label}</div>
-        <h1>{title}</h1>
-        <p>{description}</p>
+        <div className="page-heading-row">
+          <div>
+            <h1>{title}</h1>
+            <p>{description}</p>
+          </div>
+          {aside}
+        </div>
       </div>
     </section>
   );

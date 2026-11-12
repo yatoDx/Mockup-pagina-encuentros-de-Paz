@@ -20,6 +20,18 @@ import { LogoUDistrital, LogoIPAZUD, LogoEPAZ } from './institutional-logos';
 import bear from '@/assets/peace-bear.png';
 import photo from '@/assets/peace-circle.jpg';
 
+export function AlianzaBadge() {
+  return (
+    <div className="qs-badge-alianza">
+      <img src={bear} alt="Oso gestor de paz" className="w-12 h-14 object-contain" />
+      <div>
+        <strong>Alianza Tripartita</strong>
+        <span>U. Distrital · IPAZUD · E-PAZ</span>
+      </div>
+    </div>
+  );
+}
+
 export function QuienesSomosSection({ showIntro = true }: { showIntro?: boolean }) {
   const [activeTab, setActiveTab] = useState<'alianza' | 'trayectoria' | 'red' | 'pilares'>('alianza');
   const [hasExplored, setHasExplored] = useState(false);
@@ -29,41 +41,27 @@ export function QuienesSomosSection({ showIntro = true }: { showIntro?: boolean 
     setHasExplored(true);
   };
 
-  const alianzaBadge = (
-    <div className="qs-badge-alianza">
-      <img src={bear} alt="Oso gestor de paz" className="w-12 h-14 object-contain" />
-      <div>
-        <strong>Alianza Tripartita</strong>
-        <span>U. Distrital · IPAZUD · E-PAZ</span>
-      </div>
-    </div>
-  );
-
   return (
     <section id="quienes-somos" className="section-quienes-somos" aria-label="Módulo Quiénes Somos">
       <div className="wrap">
         {/* Encabezado del Módulo (en la página propia lo aporta el PageHeading) */}
-        <div className={`qs-header ${showIntro ? '' : 'qs-header-compact'}`}>
-          {showIntro ? (
-            <>
-              <div className="eyebrow">
-                <span className="live-dot" /> Identidad y Propósito
+        {showIntro && (
+          <div className="qs-header">
+            <div className="eyebrow">
+              <span className="live-dot" /> Identidad y Propósito
+            </div>
+            <div className="qs-title-row">
+              <div>
+                <h2>¿Quiénes Somos?</h2>
+                <p className="section-description">
+                  Somos una alianza interinstitucional entre la academia, organizaciones de paz y comunidades escolares,
+                  comprometidas con sembrar convivencia pacífica, mediación escolar y diálogo transformador desde las aulas hacia toda Colombia.
+                </p>
               </div>
-              <div className="qs-title-row">
-                <div>
-                  <h2>¿Quiénes Somos?</h2>
-                  <p className="section-description">
-                    Somos una alianza interinstitucional entre la academia, organizaciones de paz y comunidades escolares,
-                    comprometidas con sembrar convivencia pacífica, mediación escolar y diálogo transformador desde las aulas hacia toda Colombia.
-                  </p>
-                </div>
-                {alianzaBadge}
-              </div>
-            </>
-          ) : (
-            <div className="qs-badge-row">{alianzaBadge}</div>
-          )}
-        </div>
+              <AlianzaBadge />
+            </div>
+          </div>
+        )}
 
         {/* Pestañas de Navegación del Módulo */}
         <div className="qs-nav-tabs" role="tablist">
